@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>日常请假列表</title>
+  <style>
+    :root{
+      --bg:#f2f4f5;
+      --card:#fff;
+      --text:#1f1f1f;
+      --sub:#8f8f8f;
+      --cyan:#55d8d2;
+      --purple:#bb79f3;
+      --red:#ef2a2a;
+      --orange:#f6a032;
+      --footer1:#52d8d0;
+      --footer2:#46aef6;
+      --mask:rgba(0,0,0,.38);
+    }
+    *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body{
+      margin:0; padding:0; min-height:100vh;
+      background:var(--bg); color:var(--text);
+      font-family:"PingFang SC","HarmonyOS Sans SC","MiSans","Noto Sans SC","Microsoft YaHei",sans-serif;
+    }
+    .app{
+      width:100%; max-width:480px; margin:0 auto; min-height:100vh;
+      background:var(--bg); position:relative; padding-bottom:92px;
+    }
+    .top-space{
+      height:10px;
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:var(--bg);
+    }
+    .secret-hit{
+      position:fixed;
+      top:0;
+      right:0;
+      width:96px;
+      height:72px;
+      z-index:20;
+      background:transparent;
+    }
+    .list{ padding-top:0; }
+    .card{
+      background:#fff;
+      margin-bottom:10px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card-inner{ padding:20px 18px 10px; }
+    .row{
+      display:flex;
+      align-items:flex-start;
+      margin-bottom:20px;
+    }
+    .row:last-child{ margin-bottom:10px; }
+    .label{
+      width:88px;
+      flex-shrink:0;
+      color:#444;
+      font-size:16px;
+      line-height:26px;
+    }
+    .value-wrap{
+      flex:1;
+      min-width:0;
+      display:flex;
+      align-items:flex-start;
+    }
+    .value{
+      flex:1;
+      min-width:0;
+      color:#666;
+      font-size:16px;
+      line-height:26px;
+      word-break:break-all;
+      white-space:normal;
+      padding-right:2px;
+      transition:opacity .15s;
+    }
+    .editable{ cursor:pointer; }
+    .editable:active{ opacity:.72; }
+    .detail{
+      color:var(--cyan);
+      font-size:14px;
+      line-height:26px;
+      white-space:nowrap;
+      margin-left:10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .corner-tag{
+      position:absolute;
+      right:-44px;
+      bottom:12px;
+      width:152px;
+      height:30px;
+      line-height:30px;
+      transform:rotate(-45deg);
+      text-align:center;
+      color:#fff;
+      font-size:14px;
+      z-index:3;
+      box-shadow:0 1px 2px rgba(0,0,0,.08);
+      user-select:none;
+    }
+    .corner-finished{ background:var(--purple); }
+    .corner-reject{ background:var(--red); }
+    .corner-pending{ background:var(--orange); }
+    .timeline-wrap{
+      background:#eef1f4;
+      padding:14px 0 2px;
+      margin-top:6px;
+    }
+    .timeline-item{
+      position:relative;
+      background:#fff;
+      margin:0 16px 12px 56px;
+      border-radius:6px;
+      padding:18px 16px 16px 18px;
+      min-height:92px;
+    }
+    .timeline-item::before{
+      content:"";
+      position:absolute;
+      left:-18px;
+      top:27px;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#24d3df;
+    }
+    .timeline-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .timeline-title{ font-size:16px; font-weight:700; color:#222; }
+    .timeline-date{ font-size:14px; color:#8f8f8f; white-space:nowrap; }
+    .timeline-text{
+      font-size:14px;
+      color:#666;
+      line-height:1.7;
+      white-space:pre-wrap;
+      word-break:break-all;
+    }
+    .timeline-status{
+      margin-top:6px;
+      text-align:right;
+      color:var(--red);
+      font-size:18px;
+      font-weight:700;
+    }
+    .bottom-tip{
+      text-align:center;
+      color:#222;
+      font-size:16px;
+      padding:24px 0 14px;
+    }
+    .submit-btn{
+      position:fixed;
+      left:50%;
+      bottom:0;
+      transform:translateX(-50%);
+      width:100%;
+      max-width:480px;
+      height:56px;
+      border:none;
+      color:#fff;
+      font-size:18px;
+      background:linear-gradient(90deg,var(--footer1),var(--footer2));
+      z-index:40;
+    }
+    .safe-bottom{
+      height:env(safe-area-inset-bottom);
+      background:linear-gradient(90deg,var(--footer1),var(--footer2));
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:90px;
+      transform:translateX(-50%);
+      background:rgba(0,0,0,.76);
+      color:#fff;
+      font-size:13px;
+      padding:9px 14px;
+      border-radius:18px;
+      z-index:99;
+      display:none;
+      white-space:nowrap;
+    }
+    .mask{
+      position:fixed;
+      inset:0;
+      background:var(--mask);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      z-index:80;
+    }
+    .sheet{
+      width:100%;
+      max-width:480px;
+      background:#fff;
+      border-radius:16px 16px 0 0;
+      padding:14px 14px calc(16px + env(safe-area-inset-bottom));
+      max-height:88vh;
+      overflow:auto;
+    }
+    .sheet-title{
+      text-align:center;
+      font-size:16px;
+      font-weight:600;
+      color:#222;
+      margin-bottom:14px;
+    }
+    .form-item{ margin-bottom:12px; }
+    .form-item label{
+      display:block;
+      margin-bottom:6px;
+      font-size:13px;
+      color:#666;
+    }
+    .form-item input,
+    .form-item select,
+    .form-item textarea{
+      width:100%;
+      border:1px solid #e5e5e5;
+      border-radius:10px;
+      padding:11px 12px;
+      font-size:15px;
+      color:#222;
+      background:#fff;
+      outline:none;
+    }
+    .form-item textarea{
+      min-height:100px;
+      resize:vertical;
+    }
+    .sheet-row{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+    }
+    .sheet-btn{
+      flex:1;
+      border:none;
+      border-radius:10px;
+      font-size:15px;
+      padding:12px 0;
+      cursor:pointer;
+    }
+    .btn-cancel{ background:#f2f2f2; color:#333; }
+    .btn-ok{ background:#31cfd7; color:#fff; }
+    .btn-danger{ background:#f24a4a; color:#fff; }
+    .mini-tip{
+      margin-top:4px;
+      color:#999;
+      font-size:12px;
+      line-height:1.5;
+    }
+    @media (max-width:390px){
+      .label{ width:82px; font-size:15px; }
+      .value{ font-size:15px; }
+      .detail{ font-size:13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="top-space"></div>
+    <div class="secret-hit" id="secretHit"></div>
+    <div class="list" id="list"></div>
+    <div class="bottom-tip">已经到底了哦</div>
+    <button class="submit-btn" onclick="openAddSheet()">提交请假</button>
+    <div class="safe-bottom"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="mask" id="passwordMask">
+    <div class="sheet">
+      <div class="sheet-title">身份验证</div>
+      <div class="form-item">
+        <label>请输入密码</label>
+        <input id="passwordInput" type="password" placeholder="请输入密码">
+      </div>
+      <div class="sheet-row">
+        <button class="sheet-btn btn-cancel" onclick="closePasswordSheet()">取消</button>
+        <button class="sheet-btn btn-ok" onclick="submitPassword()">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mask" id="fieldMask">
+    <div class="sheet">
+      <div class="sheet-title" id="fieldTitle">编辑字段</div>
+
+      <div class="form-item" id="fieldInputWrap">
+        <label id="fieldLabel">内容</label>
+        <input id="fieldInput" placeholder="请输入内容">
+      </div>
+
+      <div class="form-item" id="fieldSelectWrap" style="display:none;">
+        <label id="fieldSelectLabel">选择内容</label>
+        <select id="fieldSelect"></select>
+      </div>
+
+      <div id="fieldTimeBox" style="display:none;">
+        <div class="form-item">
+          <label>请假开始时间</label>
+          <input id="fieldStartTime" type="datetime-local">
+        </div>
+        <div class="form-item">
+          <label>请假结束时间</label>
+          <input id="fieldEndTime" type="datetime-local">
+        </div>
+        <div class="form-item">
+          <label>请假时长</label>
+          <input id="fieldDurationPreview" readonly>
+        </div>
+      </div>
+
+      <div class="mini-tip" id="fieldTip"></div>
+
+      <div class="sheet-row">
+        <button class="sheet-btn btn-cancel" onclick="closeFieldSheet()">取消</button>
+        <button class="sheet-btn btn-ok" onclick="saveFieldSheet()">保存</button>
+        <button class="sheet-btn btn-danger" onclick="deleteCurrentCard()">删除</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mask" id="addMask">
+    <div class="sheet">
+      <div class="sheet-title">新增请假</div>
+
+      <div class="form-item">
+        <label>学号</label>
+        <input id="aStudentId" placeholder="请输入学号">
+      </div>
+
+      <div class="form-item">
+        <label>姓名</label>
+        <input id="aStudentName" placeholder="请输入姓名">
+      </div>
+
+      <div class="form-item">
+        <label>请假开始时间</label>
+        <input id="aStartTime" type="datetime-local">
+      </div>
+
+      <div class="form-item">
+        <label>请假结束时间</label>
+        <input id="aEndTime" type="datetime-local">
+      </div>
+
+      <div class="form-item">
+        <label>请假时长（自动计算）</label>
+        <input id="aDuration" placeholder="选择开始和结束时间后自动生成" readonly>
+      </div>
+
+      <div class="form-item">
+        <label>是否续假</label>
+        <select id="aRenew">
+          <option value="否">否</option>
+          <option value="是">是</option>
+        </select>
+      </div>
+
+      <div class="form-item">
+        <label>请假原因</label>
+        <input id="aReason" placeholder="例如：校外:实习实践">
+      </div>
+
+      <div class="form-item">
+        <label>销假状态</label>
+        <select id="aCancelStatus">
+          <option value=""></option>
+          <option value="已销假">已销假</option>
+          <option value="待销假">待销假</option>
+          <option value="未销假">未销假</option>
+        </select>
+      </div>
+
+      <div class="form-item">
+        <label>右下角状态条</label>
+        <select id="aTagType">
+          <option value="">无</option>
+          <option value="finished">已销假（紫色）</option>
+          <option value="pending">待销假（橙色）</option>
+          <option value="reject">已拒绝（红色）</option>
+        </select>
+      </div>
+
+      <div class="form-item">
+        <label>审批流 JSON（可选）</label>
+        <textarea id="aTimeline" placeholder='[
+  {"title":"学管干部","date":"2025-12-31","text":"意见：同意","status":"已拒绝"},
+  {"title":"学生申请","date":"2025-12-31","text":"张三(10001)发起申请","status":""}
+]'></textarea>
+      </div>
+
+      <div class="sheet-row">
+        <button class="sheet-btn btn-cancel" onclick="closeAddSheet()">取消</button>
+        <button class="sheet-btn btn-danger" onclick="clearAddForm()">删除新增内容</button>
+        <button class="sheet-btn btn-ok" onclick="saveAddSheet()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "leave_h5_v4_final";
+    const UNLOCK_KEY = "leave_h5_v4_final_unlock";
+    const EDIT_PASSWORD = "787903";
+
+    let unlocked = false;
+    let currentField = { id:null, key:"", title:"" };
+    let hitTapCount = 0;
+    let hitTapTimer = null;
+
+    const defaultData = [
+      {
+        id: 10001,
+        studentId: "2025902024",
+        studentName: "张三",
+        startTime: "2026-05-02 16:00",
+        endTime: "2026-05-05 16:00",
+        duration: "3天0小时",
+        isRenew: "否",
+        reason: "校外:节假日外出",
+        cancelStatus: "已销假",
+        tagType: "finished",
+        showTimeline: false,
+        timeline: []
+      },
+      {
+        id: 10002,
+        studentId: "10001",
+        studentName: "张三",
+        startTime: "2026-04-03 06:00",
+        endTime: "2026-06-02 22:00",
+        duration: "60天16小时",
+        isRenew: "否",
+        reason: "校外:实习实践",
+        cancelStatus: "",
+        tagType: "pending",
+        showTimeline: false,
+        timeline: []
+      },
+      {
+        id: 10003,
+        studentId: "2025902024",
+        studentName: "张三",
+        startTime: "2026-01-01 08:00",
+        endTime: "2026-01-03 14:00",
+        duration: "2天6小时",
+        isRenew: "否",
+        reason: "校外:病假",
+        cancelStatus: "",
+        tagType: "reject",
+        showTimeline: true,
+        timeline: [
+          { title: "学管干部", date: "2025-12-31", text: "意见：同意", status: "已拒绝" },
+          { title: "学生申请", date: "2025-12-31", text: "张三(2025902024)发起申请", status: "" }
+        ]
+      }
+    ];
+
+    function normalizeReasonText(str){
+      return String(str || "").replace(/·/g, ":");
+    }
+
+    function normalizeAllReasonFields(data){
+      return (data || []).map(item => ({
+        ...item,
+        reason: normalizeReasonText(item.reason)
+      }));
+    }
+
+    function getData(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw){
+        const normalizedDefaultData = normalizeAllReasonFields(defaultData);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedDefaultData));
+        return normalizedDefaultData;
+      }
+      try{
+        const parsed = JSON.parse(raw);
+        const normalized = normalizeAllReasonFields(parsed);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+        return normalized;
+      }catch(e){
+        const normalizedDefaultData = normalizeAllReasonFields(defaultData);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedDefaultData));
+        return normalizedDefaultData;
+      }
+    }
+
+    function setData(data){
+      const normalized = normalizeAllReasonFields(data);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+    }
+
+    function isUnlocked(){
+      return unlocked === true;
+    }
+
+    function setUnlocked(v){
+      unlocked = !!v;
+    }
+
+    function showToast(msg){
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => {
+        toast.style.display = "none";
+      }, 1600);
+    }
+
+    function escapeHtml(str){
+      return String(str || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+    }
+
+    function tagText(type){
+      if(type === "finished") return "已销假";
+      if(type === "pending") return "待销假";
+      if(type === "reject") return "已拒绝";
+      return "";
+    }
+
+    function tagClass(type){
+      if(type === "finished") return "corner-finished";
+      if(type === "pending") return "corner-pending";
+      if(type === "reject") return "corner-reject";
+      return "";
+    }
+
+    function toDatetimeLocal(str){
+      return str ? str.replace(" ", "T") : "";
+    }
+
+    function fromDatetimeLocal(str){
+      return str ? str.replace("T", " ") : "";
+    }
+
+    function parseDateTime(str){
+      if(!str) return null;
+      return new Date(str.replace(/-/g, "/"));
+    }
+
+    function calcDurationText(startStr, endStr){
+      const s = parseDateTime(startStr);
+      const e = parseDateTime(endStr);
+      if(!s || !e || isNaN(s.getTime()) || isNaN(e.getTime()) || e < s) return "";
+      const diff = e.getTime() - s.getTime();
+      const totalHours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(totalHours / 24);
+      const hours = totalHours % 24;
+      return `${days}天${hours}小时`;
+    }
+
+    function render(){
+      const data = getData();
+      const list = document.getElementById("list");
+      const unlocked = isUnlocked();
+
+      list.innerHTML = data.map(item => `
+        <div class="card">
+          <div class="card-inner">
+            <div class="row">
+              <div class="label">学号</div>
+              <div class="value-wrap">
+                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'studentId', '学号')">${escapeHtml(item.studentId)}</div>
+                <div class="detail" onclick="toggleTimeline(${item.id})">查看详情&gt;</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="label">姓名</div>
+              <div class="value-wrap">
+                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'studentName', '姓名')">${escapeHtml(item.studentName)}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="label">请假时间</div>
+              <div class="value-wrap">
+                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'timeRange', '请假时间')">${escapeHtml(item.startTime + "至" + item.endTime)}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="label">请假时长</div>
+              <div class="value-wrap">
+                <div class="value">${escapeHtml(item.duration)}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="label">是否续假</div>
+              <div class="value-wrap">
+                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'isRenew', '是否续假')">${escapeHtml(item.isRenew)}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="label">请假原因</div>
+              <div class="value-wrap">
+                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'reason', '请假原因')">${escapeHtml(item.reason)}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="label">销假状态</div>
+              <div class="value-wrap">
+                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'cancelStatus', '销假状态')">${escapeHtml(item.cancelStatus)}</div>
+              </div>
+            </div>
+          </div>
+
+          ${item.tagType
+            ? `<div class="corner-tag ${tagClass(item.tagType)}" onclick="changeTag(${item.id})">${tagText(item.tagType)}</div>`
+            : `<div class="corner-tag" style="background:transparent;box-shadow:none;" onclick="changeTag(${item.id})"></div>`
+          }
+
+          ${(item.showTimeline && item.timeline && item.timeline.length) ? `
+            <div class="timeline-wrap">
+              ${item.timeline.map((t, idx) => {
+                const isStudentApply = t.title === '学生申请';
+                const editableClass = (unlocked && isStudentApply) ? 'editable' : '';
+                const clickHandler = (unlocked && isStudentApply) ? `onclick="openTimelineTextEditor(${item.id}, ${idx})"` : '';
+                return `
+                <div class="timeline-item">
+                  <div class="timeline-head">
+                    <div class="timeline-title">${escapeHtml(t.title)}</div>
+                    <div class="timeline-date">${escapeHtml(t.date)}</div>
+                  </div>
+                  <div class="timeline-text ${editableClass}" ${clickHandler}>${escapeHtml(t.text)}</div>
+                  ${t.status ? `<div class="timeline-status">${escapeHtml(t.status)}</div>` : ``}
+                </div>
+              `;
+              }).join("")}
+            </div>
+          ` : ""}
+        </div>
+      `).join("");
+    }
+
+    function requireUnlock(){
+      if(!isUnlocked()){
+        return false;
+      }
+      return true;
+    }
+
+    function openPasswordSheet(){
+      document.getElementById("passwordInput").value = "";
+      document.getElementById("passwordMask").style.display = "flex";
+      setTimeout(() => {
+        document.getElementById("passwordInput").focus();
+      }, 60);
+    }
+
+    function closePasswordSheet(){
+      document.getElementById("passwordMask").style.display = "none";
+    }
+
+    function submitPassword(){
+      const v = document.getElementById("passwordInput").value.trim();
+      if(v === EDIT_PASSWORD){
+        setUnlocked(true);
+        closePasswordSheet();
+        render();
+        showToast("验证成功");
+      }else{
+        showToast("密码错误");
+      }
+    }
+
+    function bindSecretTrigger(){
+      const hit = document.getElementById("secretHit");
+      hit.addEventListener("click", function(){
+        hitTapCount++;
+        clearTimeout(hitTapTimer);
+        hitTapTimer = setTimeout(() => {
+          hitTapCount = 0;
+        }, 1200);
+        if(hitTapCount >= 5){
+          hitTapCount = 0;
+          openPasswordSheet();
+        }
+      });
+    }
+
+    function openTimelineTextEditor(itemId, timelineIdx){
+      if(!requireUnlock()) return;
+      const item = getData().find(x => x.id === itemId);
+      if(!item || !item.timeline || !item.timeline[timelineIdx]) return;
+
+      currentField = { id: itemId, key: "TIMELINE_IDX:" + timelineIdx, title: "申请详情" };
+
+      document.getElementById("fieldTitle").innerText = "编辑申请详情";
+      document.getElementById("fieldLabel").innerText = "内容";
+      document.getElementById("fieldSelectLabel").innerText = "内容";
+      document.getElementById("fieldTip").innerText = "";
+      document.getElementById("fieldInputWrap").style.display = "block";
+      document.getElementById("fieldSelectWrap").style.display = "none";
+      document.getElementById("fieldTimeBox").style.display = "none";
+
+      document.getElementById("fieldInput").value = item.timeline[timelineIdx].text || "";
+
+      document.getElementById("fieldMask").style.display = "flex";
+    }
+
+    function openFieldEditor(id, key, title){
+      if(!requireUnlock()) return;
+
+      currentField = { id, key, title };
+      document.getElementById("fieldTitle").innerText = "编辑" + title;
+      document.getElementById("fieldLabel").innerText = title;
+      document.getElementById("fieldSelectLabel").innerText = title;
+      document.getElementById("fieldTip").innerText = "";
+      document.getElementById("fieldInputWrap").style.display = "block";
+      document.getElementById("fieldSelectWrap").style.display = "none";
+      document.getElementById("fieldTimeBox").style.display = "none";
+
+      const item = getData().find(x => x.id === id);
+      if(!item) return;
+
+      if(key === "isRenew"){
+        document.getElementById("fieldInputWrap").style.display = "none";
+        document.getElementById("fieldSelectWrap").style.display = "block";
+        document.getElementById("fieldSelect").innerHTML = `
+          <option value="否">否</option>
+          <option value="是">是</option>
+        `;
+        document.getElementById("fieldSelect").value = item.isRenew || "否";
+      } else if(key === "cancelStatus"){
+        document.getElementById("fieldInputWrap").style.display = "none";
+        document.getElementById("fieldSelectWrap").style.display = "block";
+        document.getElementById("fieldSelect").innerHTML = `
+          <option value=""></option>
+          <option value="已销假">已销假</option>
+          <option value="待销假">待销假</option>
+          <option value="未销假">未销假</option>
+        `;
+        document.getElementById("fieldSelect").value = item.cancelStatus || "";
+      } else if(key === "timeRange"){
+        document.getElementById("fieldInputWrap").style.display = "none";
+        document.getElementById("fieldTimeBox").style.display = "block";
+        document.getElementById("fieldStartTime").value = toDatetimeLocal(item.startTime);
+        document.getElementById("fieldEndTime").value = toDatetimeLocal(item.endTime);
+        document.getElementById("fieldDurationPreview").value = item.duration || "";
+        document.getElementById("fieldTip").innerText = "修改时间后会自动重新计算请假时长";
+      } else {
+        document.getElementById("fieldInput").value = item[key] || "";
+      }
+
+      document.getElementById("fieldMask").style.display = "flex";
+    }
+
+    function closeFieldSheet(){
+      document.getElementById("fieldMask").style.display = "none";
+    }
+
+    function saveFieldSheet(){
+      const data = getData();
+      const item = data.find(x => x.id === currentField.id);
+      if(!item) return;
+
+      if(currentField.key.startsWith("TIMELINE_IDX:")){
+        const idxStr = currentField.key.split(":")[1];
+        const idx = parseInt(idxStr);
+        if(!isNaN(idx) && item.timeline && item.timeline[idx]){
+          item.timeline[idx].text = document.getElementById("fieldInput").value.trim();
+        }
+      } else if(currentField.key === "isRenew"){
+        item.isRenew = document.getElementById("fieldSelect").value;
+      } else if(currentField.key === "cancelStatus"){
+        item.cancelStatus = document.getElementById("fieldSelect").value;
+      } else if(currentField.key === "timeRange"){
+        item.startTime = fromDatetimeLocal(document.getElementById("fieldStartTime").value);
+        item.endTime = fromDatetimeLocal(document.getElementById("fieldEndTime").value);
+        const d = calcDurationText(item.startTime, item.endTime);
+        if(!d){
+          showToast("时间区间无效");
+          return;
+        }
+        item.duration = d;
+      } else if(currentField.key === "reason"){
+        item.reason = normalizeReasonText(document.getElementById("fieldInput").value.trim());
+      } else {
+        item[currentField.key] = document.getElementById("fieldInput").value.trim();
+      }
+
+      setData(data);
+      closeFieldSheet();
+      render();
+      showToast("已保存");
+    }
+
+    function deleteCurrentCard(){
+      if(!requireUnlock()) return;
+      if(!confirm("确定删除这条请假记录吗？")) return;
+      const data = getData().filter(x => x.id !== currentField.id);
+      setData(data);
+      closeFieldSheet();
+      render();
+      showToast("已删除");
+    }
+
+    function changeTag(id){
+      if(!requireUnlock()) return;
+      const data = getData();
+      const item = data.find(x => x.id === id);
+      if(!item) return;
+
+      const arr = ["finished", "pending", "reject", ""];
+      const idx = arr.indexOf(item.tagType || "");
+      item.tagType = arr[(idx + 1) % arr.length];
+
+      if(item.tagType === "finished" && !item.cancelStatus){
+        item.cancelStatus = "已销假";
+      }
+      if(item.tagType === "pending" && !item.cancelStatus){
+        item.cancelStatus = "待销假";
+      }
+
+      setData(data);
+      render();
+      showToast(item.tagType ? "状态已切换为" + tagText(item.tagType) : "已清除状态条");
+    }
+
+    function toggleTimeline(id){
+      const data = getData();
+      const item = data.find(x => x.id === id);
+      if(!item) return;
+      item.showTimeline = !item.showTimeline;
+      setData(data);
+      render();
+    }
+
+    function openAddSheet(){
+      if(!requireUnlock()) return;
+      clearAddForm();
+      document.getElementById("addMask").style.display = "flex";
+    }
+
+    function closeAddSheet(){
+      document.getElementById("addMask").style.display = "none";
+    }
+
+    function clearAddForm(){
+      document.getElementById("aStudentId").value = "";
+      document.getElementById("aStudentName").value = "";
+      document.getElementById("aStartTime").value = "";
+      document.getElementById("aEndTime").value = "";
+      document.getElementById("aDuration").value = "";
+      document.getElementById("aRenew").value = "否";
+      document.getElementById("aReason").value = "";
+      document.getElementById("aCancelStatus").value = "";
+      document.getElementById("aTagType").value = "";
+      document.getElementById("aTimeline").value = "";
+      showToast("新增内容已清空");
+    }
+
+    function saveAddSheet(){
+      const studentId = document.getElementById("aStudentId").value.trim();
+      const studentName = document.getElementById("aStudentName").value.trim();
+      const startTime = fromDatetimeLocal(document.getElementById("aStartTime").value);
+      const endTime = fromDatetimeLocal(document.getElementById("aEndTime").value);
+      const duration = document.getElementById("aDuration").value.trim();
+      const isRenew = document.getElementById("aRenew").value;
+      const reason = normalizeReasonText(document.getElementById("aReason").value.trim());
+      const cancelStatus = document.getElementById("aCancelStatus").value;
+      const tagType = document.getElementById("aTagType").value;
+      const timelineText = document.getElementById("aTimeline").value.trim();
+
+      if(!startTime || !endTime || !duration){
+        showToast("请先选择有效的请假区间");
+        return;
+      }
+
+      let timeline = [];
+      if(timelineText){
+        try{
+          timeline = JSON.parse(timelineText);
+          if(!Array.isArray(timeline)){
+            alert("审批流必须是数组 JSON");
+            return;
+          }
+        }catch(e){
+          alert("审批流 JSON 格式错误");
+          return;
+        }
+      }
+
+      const data = getData();
+      data.unshift({
+        id: Date.now(),
+        studentId,
+        studentName,
+        startTime,
+        endTime,
+        duration,
+        isRenew,
+        reason,
+        cancelStatus,
+        tagType,
+        showTimeline: !!timeline.length,
+        timeline
+      });
+
+      setData(data);
+      closeAddSheet();
+      render();
+      showToast("新增成功");
+    }
+
+    function updateAddDuration(){
+      const start = fromDatetimeLocal(document.getElementById("aStartTime").value);
+      const end = fromDatetimeLocal(document.getElementById("aEndTime").value);
+      document.getElementById("aDuration").value = calcDurationText(start, end);
+    }
+
+    function updateFieldDuration(){
+      const start = fromDatetimeLocal(document.getElementById("fieldStartTime").value);
+      const end = fromDatetimeLocal(document.getElementById("fieldEndTime").value);
+      document.getElementById("fieldDurationPreview").value = calcDurationText(start, end);
+    }
+
+    document.getElementById("aStartTime").addEventListener("change", updateAddDuration);
+    document.getElementById("aEndTime").addEventListener("change", updateAddDuration);
+    document.getElementById("fieldStartTime").addEventListener("change", updateFieldDuration);
+    document.getElementById("fieldEndTime").addEventListener("change", updateFieldDuration);
+
+    document.getElementById("passwordMask").addEventListener("click", e => {
+      if(e.target.id === "passwordMask") closePasswordSheet();
+    });
+    document.getElementById("fieldMask").addEventListener("click", e => {
+      if(e.target.id === "fieldMask") closeFieldSheet();
+    });
+    document.getElementById("addMask").addEventListener("click", e => {
+      if(e.target.id === "addMask") closeAddSheet();
+    });
+
+    localStorage.removeItem(UNLOCK_KEY);
+    setUnlocked(false);
+    render();
+    bindSecretTrigger();
+  </script>
+</body>
+</html>
