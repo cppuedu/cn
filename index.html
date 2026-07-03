@@ -37,7 +37,6 @@
       background:var(--bg);
     }
 
-    /* 解锁触发区域：放到顶部正上方中间空白处，避免误触查看详情 */
     .secret-hit{
       position:fixed;
       top:0;
@@ -235,6 +234,7 @@
       z-index:150;
       display:none;
       overflow:auto;
+      touch-action:pan-y;
     }
     .detail-page-inner{
       width:100%;
@@ -491,6 +491,9 @@
     let hitTapCount = 0;
     let hitTapTimer = null;
     let currentDetailId = null;
+    let detailTouchStartX = 0;
+    let detailTouchStartY = 0;
+    let detailTouching = false;
 
     const defaultData = [
       {
@@ -780,7 +783,6 @@
 
     function requireUnlock(){
       if(!isUnlocked()){
-        showToast("未解锁，暂不可编辑");
         return false;
       }
       return true;
@@ -1214,6 +1216,47 @@
       document.getElementById("fieldDurationPreview").value = calcDurationText2(start, end);
     }
 
+    function bindDetailSwipeBack(){
+      const detailPage = document.getElementById("detailPage");
+
+      detailPage.addEventListener("touchstart", function(e){
+        if(currentDetailId === null) return;
+        if(!e.touches || !e.touches.length) return;
+        const t = e.touches[0];
+        detailTouchStartX = t.clientX;
+        detailTouchStartY = t.clientY;
+        detailTouching = true;
+      }, { passive:true });
+
+      detailPage.addEventListener("touchmove", function(e){
+        if(!detailTouching || currentDetailId === null) return;
+        if(!e.touches || !e.touches.length) return;
+      }, { passive:true });
+
+      detailPage.addEventListener("touchend", function(e){
+        if(!detailTouching || currentDetailId === null) return;
+        if(!e.changedTouches || !e.changedTouches.length){
+          detailTouching = false;
+          return;
+        }
+        const t = e.changedTouches[0];
+        const dx = t.clientX - detailTouchStartX;
+        const dy = t.clientY - detailTouchStartY;
+
+        detailTouching = false;
+
+        if(Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.2){
+          if(dx > 0){
+            closeDetailPage();
+          }
+        }
+      }, { passive:true });
+
+      detailPage.addEventListener("touchcancel", function(){
+        detailTouching = false;
+      }, { passive:true });
+    }
+
     document.getElementById("aStartTime").addEventListener("change", updateAddDuration);
     document.getElementById("aEndTime").addEventListener("change", updateAddDuration);
     document.getElementById("fieldStartTime").addEventListener("change", updateFieldDuration);
@@ -1239,6 +1282,7 @@
     setWechatTitle("日常请假列表");
     render();
     bindSecretTrigger();
+    bindDetailSwipeBack();
   </script>
 </body>
 </html>
