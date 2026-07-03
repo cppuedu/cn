@@ -17,6 +17,7 @@
       --footer1:#52d8d0;
       --footer2:#46aef6;
       --mask:rgba(0,0,0,.38);
+      --line:#efefef;
     }
     *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     html,body{
@@ -29,21 +30,25 @@
       background:var(--bg); position:relative; padding-bottom:92px;
     }
     .top-space{
-      height:10px;
+      height:0;
       position:sticky;
       top:0;
       z-index:10;
       background:var(--bg);
     }
+
+    /* 解锁触发区域：放到顶部正上方中间空白处，避免误触查看详情 */
     .secret-hit{
       position:fixed;
       top:0;
-      right:0;
-      width:96px;
-      height:72px;
-      z-index:20;
+      left:50%;
+      transform:translateX(-50%);
+      width:140px;
+      height:42px;
+      z-index:120;
       background:transparent;
     }
+
     .list{ padding-top:0; }
     .card{
       background:#fff;
@@ -111,52 +116,7 @@
     .corner-finished{ background:var(--purple); }
     .corner-reject{ background:var(--red); }
     .corner-pending{ background:var(--orange); }
-    .timeline-wrap{
-      background:#eef1f4;
-      padding:14px 0 2px;
-      margin-top:6px;
-    }
-    .timeline-item{
-      position:relative;
-      background:#fff;
-      margin:0 16px 12px 56px;
-      border-radius:6px;
-      padding:18px 16px 16px 18px;
-      min-height:92px;
-    }
-    .timeline-item::before{
-      content:"";
-      position:absolute;
-      left:-18px;
-      top:27px;
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:#24d3df;
-    }
-    .timeline-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:12px;
-    }
-    .timeline-title{ font-size:16px; font-weight:700; color:#222; }
-    .timeline-date{ font-size:14px; color:#8f8f8f; white-space:nowrap; }
-    .timeline-text{
-      font-size:14px;
-      color:#666;
-      line-height:1.7;
-      white-space:pre-wrap;
-      word-break:break-all;
-    }
-    .timeline-status{
-      margin-top:6px;
-      text-align:right;
-      color:var(--red);
-      font-size:18px;
-      font-weight:700;
-    }
+
     .bottom-tip{
       text-align:center;
       color:#222;
@@ -181,6 +141,7 @@
       height:env(safe-area-inset-bottom);
       background:linear-gradient(90deg,var(--footer1),var(--footer2));
     }
+
     .toast{
       position:fixed;
       left:50%;
@@ -191,10 +152,11 @@
       font-size:13px;
       padding:9px 14px;
       border-radius:18px;
-      z-index:99;
+      z-index:199;
       display:none;
       white-space:nowrap;
     }
+
     .mask{
       position:fixed;
       inset:0;
@@ -202,7 +164,7 @@
       display:none;
       align-items:flex-end;
       justify-content:center;
-      z-index:80;
+      z-index:180;
     }
     .sheet{
       width:100%;
@@ -265,21 +227,134 @@
       font-size:12px;
       line-height:1.5;
     }
+
+    .detail-page{
+      position:fixed;
+      inset:0;
+      background:#f5f5f6;
+      z-index:150;
+      display:none;
+      overflow:auto;
+    }
+    .detail-page-inner{
+      width:100%;
+      max-width:480px;
+      margin:0 auto;
+      min-height:100vh;
+      background:#f5f5f6;
+      padding-bottom:20px;
+      padding-top:0;
+    }
+    .section-title{
+      background:#ececef;
+      color:#4b4b4b;
+      font-size:15px;
+      padding:16px 16px;
+      margin-top:0;
+    }
+    .detail-card{
+      background:#fff;
+    }
+    .detail-row{
+      display:flex;
+      align-items:flex-start;
+      min-height:58px;
+      border-bottom:1px solid var(--line);
+      padding:0 14px;
+      background:#fff;
+    }
+    .detail-row:last-child{
+      border-bottom:none;
+    }
+    .detail-label{
+      width:42%;
+      min-width:120px;
+      padding:18px 0;
+      font-size:16px;
+      color:#333;
+      line-height:22px;
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+    .required{
+      color:#d92b2b;
+      font-size:18px;
+      line-height:1;
+      margin-right:4px;
+    }
+    .detail-value{
+      flex:1;
+      padding:18px 0;
+      font-size:16px;
+      color:#8a8a8a;
+      line-height:22px;
+      word-break:break-all;
+      white-space:pre-wrap;
+      text-align:left;
+    }
+    .detail-value.editable{
+      cursor:pointer;
+    }
+    .radio-group{
+      display:flex;
+      align-items:center;
+      gap:30px;
+      color:#7d7d7d;
+      font-size:16px;
+      flex-wrap:wrap;
+    }
+    .radio-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .radio-dot{
+      width:22px;
+      height:22px;
+      border:2px solid #d9d9d9;
+      border-radius:50%;
+      position:relative;
+      background:#fff;
+      flex-shrink:0;
+    }
+    .radio-dot.active::after{
+      content:"";
+      position:absolute;
+      inset:4px;
+      background:#bfbfbf;
+      border-radius:50%;
+    }
+
     @media (max-width:390px){
       .label{ width:82px; font-size:15px; }
       .value{ font-size:15px; }
       .detail{ font-size:13px; }
+      .detail-label{ min-width:106px; font-size:15px; }
+      .detail-value{ font-size:15px; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="app" id="mainPage">
     <div class="top-space"></div>
     <div class="secret-hit" id="secretHit"></div>
     <div class="list" id="list"></div>
     <div class="bottom-tip">已经到底了哦</div>
     <button class="submit-btn" onclick="openAddSheet()">提交请假</button>
     <div class="safe-bottom"></div>
+  </div>
+
+  <div class="detail-page" id="detailPage">
+    <div class="detail-page-inner">
+      <div class="section-title">请假信息</div>
+      <div class="detail-card" id="detailInfoBox"></div>
+
+      <div class="section-title" style="margin-top:12px;">外出信息</div>
+      <div class="detail-card" id="detailOutBox"></div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -314,15 +389,15 @@
 
       <div id="fieldTimeBox" style="display:none;">
         <div class="form-item">
-          <label>请假开始时间</label>
+          <label id="fieldStartTimeLabel">开始时间</label>
           <input id="fieldStartTime" type="datetime-local">
         </div>
         <div class="form-item">
-          <label>请假结束时间</label>
+          <label id="fieldEndTimeLabel">结束时间</label>
           <input id="fieldEndTime" type="datetime-local">
         </div>
         <div class="form-item">
-          <label>请假时长</label>
+          <label id="fieldDurationLabel">时长</label>
           <input id="fieldDurationPreview" readonly>
         </div>
       </div>
@@ -332,7 +407,7 @@
       <div class="sheet-row">
         <button class="sheet-btn btn-cancel" onclick="closeFieldSheet()">取消</button>
         <button class="sheet-btn btn-ok" onclick="saveFieldSheet()">保存</button>
-        <button class="sheet-btn btn-danger" onclick="deleteCurrentCard()">删除</button>
+        <button class="sheet-btn btn-danger" id="deleteBtn" onclick="deleteCurrentCard()">删除</button>
       </div>
     </div>
   </div>
@@ -399,14 +474,6 @@
         </select>
       </div>
 
-      <div class="form-item">
-        <label>审批流 JSON（可选）</label>
-        <textarea id="aTimeline" placeholder='[
-  {"title":"学管干部","date":"2025-12-31","text":"意见：同意","status":"已拒绝"},
-  {"title":"学生申请","date":"2025-12-31","text":"张三(10001)发起申请","status":""}
-]'></textarea>
-      </div>
-
       <div class="sheet-row">
         <button class="sheet-btn btn-cancel" onclick="closeAddSheet()">取消</button>
         <button class="sheet-btn btn-danger" onclick="clearAddForm()">删除新增内容</button>
@@ -416,14 +483,14 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "leave_h5_v4_final";
-    const UNLOCK_KEY = "leave_h5_v4_final_unlock";
+    const STORAGE_KEY = "leave_h5_v42_final";
     const EDIT_PASSWORD = "787903";
 
     let unlocked = false;
-    let currentField = { id:null, key:"", title:"" };
+    let currentField = { id:null, key:"", title:"", source:"list" };
     let hitTapCount = 0;
     let hitTapTimer = null;
+    let currentDetailId = null;
 
     const defaultData = [
       {
@@ -437,8 +504,24 @@
         reason: "校外:节假日外出",
         cancelStatus: "已销假",
         tagType: "finished",
-        showTimeline: false,
-        timeline: []
+
+        term: "2025-2026学年第二学期",
+        leaveType: "校外",
+        leaveReason: "事假",
+        detailDesc: "",
+        mobilePhone: "",
+        informedGuardian: "是",
+        guardianName: "",
+        guardianPhone: "",
+        isLeaveSchool: "是",
+        isLeaveDorm: "是",
+        outPlace: "河北省廊坊市广阳区",
+        outDetailPlace: "河北省廊坊市广阳区",
+        outStartTime: "2026-05-02 16:00",
+        outEndTime: "2026-05-05 16:00",
+        outWayGo: "打车",
+        outWayBack: "打车",
+        withCompanion: "是"
       },
       {
         id: 10002,
@@ -451,8 +534,24 @@
         reason: "校外:实习实践",
         cancelStatus: "",
         tagType: "pending",
-        showTimeline: false,
-        timeline: []
+
+        term: "2025-2026学年第二学期",
+        leaveType: "校外",
+        leaveReason: "事假",
+        detailDesc: "",
+        mobilePhone: "",
+        informedGuardian: "是",
+        guardianName: "",
+        guardianPhone: "",
+        isLeaveSchool: "是",
+        isLeaveDorm: "是",
+        outPlace: "河北省廊坊市广阳区",
+        outDetailPlace: "河北省廊坊市广阳区",
+        outStartTime: "2026-04-03 06:00",
+        outEndTime: "2026-06-02 22:00",
+        outWayGo: "打车",
+        outWayBack: "打车",
+        withCompanion: "是"
       },
       {
         id: 10003,
@@ -465,11 +564,24 @@
         reason: "校外:病假",
         cancelStatus: "",
         tagType: "reject",
-        showTimeline: true,
-        timeline: [
-          { title: "学管干部", date: "2025-12-31", text: "意见：同意", status: "已拒绝" },
-          { title: "学生申请", date: "2025-12-31", text: "张三(2025902024)发起申请", status: "" }
-        ]
+
+        term: "2025-2026学年第二学期",
+        leaveType: "校外",
+        leaveReason: "病假",
+        detailDesc: "",
+        mobilePhone: "",
+        informedGuardian: "是",
+        guardianName: "",
+        guardianPhone: "",
+        isLeaveSchool: "是",
+        isLeaveDorm: "是",
+        outPlace: "河北省廊坊市广阳区",
+        outDetailPlace: "河北省廊坊市广阳区人民医院",
+        outStartTime: "2026-01-01 08:00",
+        outEndTime: "2026-01-03 14:00",
+        outWayGo: "打车",
+        outWayBack: "打车",
+        withCompanion: "是"
       }
     ];
 
@@ -477,35 +589,50 @@
       return String(str || "").replace(/·/g, ":");
     }
 
-    function normalizeAllReasonFields(data){
-      return (data || []).map(item => ({
-        ...item,
-        reason: normalizeReasonText(item.reason)
-      }));
+    function ensureDetailFields(item){
+      item.term = item.term || "2025-2026学年第二学期";
+      item.leaveType = item.leaveType || "校外";
+      item.leaveReason = item.leaveReason || "事假";
+      item.detailDesc = item.detailDesc || "";
+      item.mobilePhone = item.mobilePhone || "";
+      item.guardianName = item.guardianName || "";
+      item.guardianPhone = item.guardianPhone || "";
+      item.informedGuardian = item.informedGuardian || "是";
+      item.isLeaveSchool = item.isLeaveSchool || "是";
+      item.isLeaveDorm = item.isLeaveDorm || "是";
+      item.outPlace = item.outPlace || "";
+      item.outDetailPlace = item.outDetailPlace || "";
+      item.outStartTime = item.outStartTime || item.startTime || "";
+      item.outEndTime = item.outEndTime || item.endTime || "";
+      item.outWayGo = item.outWayGo || "打车";
+      item.outWayBack = item.outWayBack || "打车";
+      item.withCompanion = item.withCompanion || "是";
+      return item;
     }
 
     function getData(){
       const raw = localStorage.getItem(STORAGE_KEY);
+      let data = [];
       if(!raw){
-        const normalizedDefaultData = normalizeAllReasonFields(defaultData);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedDefaultData));
-        return normalizedDefaultData;
+        data = defaultData.map(x => ensureDetailFields({...x, reason: normalizeReasonText(x.reason)}));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        return data;
       }
       try{
-        const parsed = JSON.parse(raw);
-        const normalized = normalizeAllReasonFields(parsed);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-        return normalized;
+        data = JSON.parse(raw) || [];
       }catch(e){
-        const normalizedDefaultData = normalizeAllReasonFields(defaultData);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedDefaultData));
-        return normalizedDefaultData;
+        data = defaultData.map(x => ensureDetailFields({...x, reason: normalizeReasonText(x.reason)}));
       }
+      data = data.map(item => ensureDetailFields({
+        ...item,
+        reason: normalizeReasonText(item.reason)
+      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      return data;
     }
 
     function setData(data){
-      const normalized = normalizeAllReasonFields(data);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.map(ensureDetailFields)));
     }
 
     function isUnlocked(){
@@ -560,7 +687,7 @@
       return new Date(str.replace(/-/g, "/"));
     }
 
-    function calcDurationText(startStr, endStr){
+    function calcDurationText2(startStr, endStr){
       const s = parseDateTime(startStr);
       const e = parseDateTime(endStr);
       if(!s || !e || isNaN(s.getTime()) || isNaN(e.getTime()) || e < s) return "";
@@ -568,13 +695,26 @@
       const totalHours = Math.floor(diff / (1000 * 60 * 60));
       const days = Math.floor(totalHours / 24);
       const hours = totalHours % 24;
-      return `${days}天${hours}小时`;
+      return days > 0 ? `${days}天${hours}小时` : `${hours}小时`;
+    }
+
+    function setWechatTitle(title){
+      document.title = title;
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = "about:blank";
+      iframe.onload = function(){
+        setTimeout(() => {
+          iframe.remove();
+        }, 0);
+      };
+      document.body.appendChild(iframe);
     }
 
     function render(){
       const data = getData();
       const list = document.getElementById("list");
-      const unlocked = isUnlocked();
+      const canEdit = isUnlocked();
 
       list.innerHTML = data.map(item => `
         <div class="card">
@@ -582,22 +722,22 @@
             <div class="row">
               <div class="label">学号</div>
               <div class="value-wrap">
-                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'studentId', '学号')">${escapeHtml(item.studentId)}</div>
-                <div class="detail" onclick="toggleTimeline(${item.id})">查看详情&gt;</div>
+                <div class="value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'studentId', '学号', 'list')">${escapeHtml(item.studentId)}</div>
+                <div class="detail" onclick="openDetailPage(${item.id})">查看详情&gt;</div>
               </div>
             </div>
 
             <div class="row">
               <div class="label">姓名</div>
               <div class="value-wrap">
-                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'studentName', '姓名')">${escapeHtml(item.studentName)}</div>
+                <div class="value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'studentName', '姓名', 'list')">${escapeHtml(item.studentName)}</div>
               </div>
             </div>
 
             <div class="row">
               <div class="label">请假时间</div>
               <div class="value-wrap">
-                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'timeRange', '请假时间')">${escapeHtml(item.startTime + "至" + item.endTime)}</div>
+                <div class="value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'timeRange', '请假时间', 'list')">${escapeHtml(item.startTime + "至" + item.endTime)}</div>
               </div>
             </div>
 
@@ -611,21 +751,21 @@
             <div class="row">
               <div class="label">是否续假</div>
               <div class="value-wrap">
-                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'isRenew', '是否续假')">${escapeHtml(item.isRenew)}</div>
+                <div class="value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'isRenew', '是否续假', 'list')">${escapeHtml(item.isRenew)}</div>
               </div>
             </div>
 
             <div class="row">
               <div class="label">请假原因</div>
               <div class="value-wrap">
-                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'reason', '请假原因')">${escapeHtml(item.reason)}</div>
+                <div class="value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'reason', '请假原因', 'list')">${escapeHtml(item.reason)}</div>
               </div>
             </div>
 
             <div class="row">
               <div class="label">销假状态</div>
               <div class="value-wrap">
-                <div class="value ${unlocked ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'cancelStatus', '销假状态')">${escapeHtml(item.cancelStatus)}</div>
+                <div class="value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${item.id}, 'cancelStatus', '销假状态', 'list')">${escapeHtml(item.cancelStatus)}</div>
               </div>
             </div>
           </div>
@@ -634,32 +774,13 @@
             ? `<div class="corner-tag ${tagClass(item.tagType)}" onclick="changeTag(${item.id})">${tagText(item.tagType)}</div>`
             : `<div class="corner-tag" style="background:transparent;box-shadow:none;" onclick="changeTag(${item.id})"></div>`
           }
-
-          ${(item.showTimeline && item.timeline && item.timeline.length) ? `
-            <div class="timeline-wrap">
-              ${item.timeline.map((t, idx) => {
-                const isStudentApply = t.title === '学生申请';
-                const editableClass = (unlocked && isStudentApply) ? 'editable' : '';
-                const clickHandler = (unlocked && isStudentApply) ? `onclick="openTimelineTextEditor(${item.id}, ${idx})"` : '';
-                return `
-                <div class="timeline-item">
-                  <div class="timeline-head">
-                    <div class="timeline-title">${escapeHtml(t.title)}</div>
-                    <div class="timeline-date">${escapeHtml(t.date)}</div>
-                  </div>
-                  <div class="timeline-text ${editableClass}" ${clickHandler}>${escapeHtml(t.text)}</div>
-                  ${t.status ? `<div class="timeline-status">${escapeHtml(t.status)}</div>` : ``}
-                </div>
-              `;
-              }).join("")}
-            </div>
-          ` : ""}
         </div>
       `).join("");
     }
 
     function requireUnlock(){
       if(!isUnlocked()){
+        showToast("未解锁，暂不可编辑");
         return false;
       }
       return true;
@@ -683,6 +804,7 @@
         setUnlocked(true);
         closePasswordSheet();
         render();
+        if(currentDetailId !== null) renderDetailPage(currentDetailId);
         showToast("验证成功");
       }else{
         showToast("密码错误");
@@ -704,30 +826,10 @@
       });
     }
 
-    function openTimelineTextEditor(itemId, timelineIdx){
-      if(!requireUnlock()) return;
-      const item = getData().find(x => x.id === itemId);
-      if(!item || !item.timeline || !item.timeline[timelineIdx]) return;
-
-      currentField = { id: itemId, key: "TIMELINE_IDX:" + timelineIdx, title: "申请详情" };
-
-      document.getElementById("fieldTitle").innerText = "编辑申请详情";
-      document.getElementById("fieldLabel").innerText = "内容";
-      document.getElementById("fieldSelectLabel").innerText = "内容";
-      document.getElementById("fieldTip").innerText = "";
-      document.getElementById("fieldInputWrap").style.display = "block";
-      document.getElementById("fieldSelectWrap").style.display = "none";
-      document.getElementById("fieldTimeBox").style.display = "none";
-
-      document.getElementById("fieldInput").value = item.timeline[timelineIdx].text || "";
-
-      document.getElementById("fieldMask").style.display = "flex";
-    }
-
-    function openFieldEditor(id, key, title){
+    function openFieldEditor(id, key, title, source="list"){
       if(!requireUnlock()) return;
 
-      currentField = { id, key, title };
+      currentField = { id, key, title, source };
       document.getElementById("fieldTitle").innerText = "编辑" + title;
       document.getElementById("fieldLabel").innerText = title;
       document.getElementById("fieldSelectLabel").innerText = title;
@@ -735,18 +837,19 @@
       document.getElementById("fieldInputWrap").style.display = "block";
       document.getElementById("fieldSelectWrap").style.display = "none";
       document.getElementById("fieldTimeBox").style.display = "none";
+      document.getElementById("deleteBtn").style.display = source === "list" ? "block" : "none";
 
       const item = getData().find(x => x.id === id);
       if(!item) return;
 
-      if(key === "isRenew"){
+      if(key === "isRenew" || key === "informedGuardian" || key === "isLeaveSchool" || key === "isLeaveDorm" || key === "withCompanion"){
         document.getElementById("fieldInputWrap").style.display = "none";
         document.getElementById("fieldSelectWrap").style.display = "block";
         document.getElementById("fieldSelect").innerHTML = `
-          <option value="否">否</option>
           <option value="是">是</option>
+          <option value="否">否</option>
         `;
-        document.getElementById("fieldSelect").value = item.isRenew || "否";
+        document.getElementById("fieldSelect").value = item[key] || "是";
       } else if(key === "cancelStatus"){
         document.getElementById("fieldInputWrap").style.display = "none";
         document.getElementById("fieldSelectWrap").style.display = "block";
@@ -757,13 +860,43 @@
           <option value="未销假">未销假</option>
         `;
         document.getElementById("fieldSelect").value = item.cancelStatus || "";
+      } else if(key === "leaveType"){
+        document.getElementById("fieldInputWrap").style.display = "none";
+        document.getElementById("fieldSelectWrap").style.display = "block";
+        document.getElementById("fieldSelect").innerHTML = `
+          <option value="校外">校外</option>
+          <option value="校内">校内</option>
+        `;
+        document.getElementById("fieldSelect").value = item.leaveType || "校外";
+      } else if(key === "leaveReason"){
+        document.getElementById("fieldInputWrap").style.display = "none";
+        document.getElementById("fieldSelectWrap").style.display = "block";
+        document.getElementById("fieldSelect").innerHTML = `
+          <option value="事假">事假</option>
+          <option value="病假">病假</option>
+          <option value="其他">其他</option>
+        `;
+        document.getElementById("fieldSelect").value = item.leaveReason || "事假";
       } else if(key === "timeRange"){
         document.getElementById("fieldInputWrap").style.display = "none";
         document.getElementById("fieldTimeBox").style.display = "block";
+        document.getElementById("fieldStartTimeLabel").innerText = "请假开始时间";
+        document.getElementById("fieldEndTimeLabel").innerText = "请假结束时间";
+        document.getElementById("fieldDurationLabel").innerText = "请假时长";
         document.getElementById("fieldStartTime").value = toDatetimeLocal(item.startTime);
         document.getElementById("fieldEndTime").value = toDatetimeLocal(item.endTime);
         document.getElementById("fieldDurationPreview").value = item.duration || "";
         document.getElementById("fieldTip").innerText = "修改时间后会自动重新计算请假时长";
+      } else if(key === "detailTimeRange"){
+        document.getElementById("fieldInputWrap").style.display = "none";
+        document.getElementById("fieldTimeBox").style.display = "block";
+        document.getElementById("fieldStartTimeLabel").innerText = "外出开始时间";
+        document.getElementById("fieldEndTimeLabel").innerText = "外出结束时间";
+        document.getElementById("fieldDurationLabel").innerText = "共计";
+        document.getElementById("fieldStartTime").value = toDatetimeLocal(item.outStartTime);
+        document.getElementById("fieldEndTime").value = toDatetimeLocal(item.outEndTime);
+        document.getElementById("fieldDurationPreview").value = calcDurationText2(item.outStartTime, item.outEndTime);
+        document.getElementById("fieldTip").innerText = "修改时间后会自动重新计算时长";
       } else {
         document.getElementById("fieldInput").value = item[key] || "";
       }
@@ -780,25 +913,27 @@
       const item = data.find(x => x.id === currentField.id);
       if(!item) return;
 
-      if(currentField.key.startsWith("TIMELINE_IDX:")){
-        const idxStr = currentField.key.split(":")[1];
-        const idx = parseInt(idxStr);
-        if(!isNaN(idx) && item.timeline && item.timeline[idx]){
-          item.timeline[idx].text = document.getElementById("fieldInput").value.trim();
-        }
-      } else if(currentField.key === "isRenew"){
-        item.isRenew = document.getElementById("fieldSelect").value;
-      } else if(currentField.key === "cancelStatus"){
-        item.cancelStatus = document.getElementById("fieldSelect").value;
+      if(currentField.key === "isRenew" || currentField.key === "informedGuardian" || currentField.key === "isLeaveSchool" || currentField.key === "isLeaveDorm" || currentField.key === "withCompanion"){
+        item[currentField.key] = document.getElementById("fieldSelect").value;
+      } else if(currentField.key === "cancelStatus" || currentField.key === "leaveType" || currentField.key === "leaveReason"){
+        item[currentField.key] = document.getElementById("fieldSelect").value;
       } else if(currentField.key === "timeRange"){
         item.startTime = fromDatetimeLocal(document.getElementById("fieldStartTime").value);
         item.endTime = fromDatetimeLocal(document.getElementById("fieldEndTime").value);
-        const d = calcDurationText(item.startTime, item.endTime);
+        const d = calcDurationText2(item.startTime, item.endTime);
         if(!d){
           showToast("时间区间无效");
           return;
         }
         item.duration = d;
+      } else if(currentField.key === "detailTimeRange"){
+        item.outStartTime = fromDatetimeLocal(document.getElementById("fieldStartTime").value);
+        item.outEndTime = fromDatetimeLocal(document.getElementById("fieldEndTime").value);
+        const d = calcDurationText2(item.outStartTime, item.outEndTime);
+        if(!d){
+          showToast("时间区间无效");
+          return;
+        }
       } else if(currentField.key === "reason"){
         item.reason = normalizeReasonText(document.getElementById("fieldInput").value.trim());
       } else {
@@ -808,15 +943,23 @@
       setData(data);
       closeFieldSheet();
       render();
+      if(currentDetailId !== null) renderDetailPage(currentDetailId);
       showToast("已保存");
     }
 
     function deleteCurrentCard(){
       if(!requireUnlock()) return;
+      if(currentField.source !== "list"){
+        showToast("详情字段不可删除整条记录");
+        return;
+      }
       if(!confirm("确定删除这条请假记录吗？")) return;
       const data = getData().filter(x => x.id !== currentField.id);
       setData(data);
       closeFieldSheet();
+      if(currentDetailId === currentField.id){
+        closeDetailPage();
+      }
       render();
       showToast("已删除");
     }
@@ -840,21 +983,151 @@
 
       setData(data);
       render();
+      if(currentDetailId !== null) renderDetailPage(currentDetailId);
       showToast(item.tagType ? "状态已切换为" + tagText(item.tagType) : "已清除状态条");
     }
 
-    function toggleTimeline(id){
+    function openDetailPage(id){
+      currentDetailId = id;
+      setWechatTitle("日常请假详情");
+      renderDetailPage(id);
+      document.getElementById("detailPage").style.display = "block";
+    }
+
+    function closeDetailPage(){
+      document.getElementById("detailPage").style.display = "none";
+      currentDetailId = null;
+      setWechatTitle("日常请假列表");
+    }
+
+    function detailText(v){
+      return escapeHtml(v || "");
+    }
+
+    function renderRadioRow(itemId, key, value){
+      const canEdit = isUnlocked();
+      const yesActive = value === "是" ? "active" : "";
+      const noActive = value === "否" ? "active" : "";
+      const yesClick = canEdit ? `onclick="setRadioValue(${itemId}, '${key}', '是')"` : "";
+      const noClick = canEdit ? `onclick="setRadioValue(${itemId}, '${key}', '否')"` : "";
+      return `
+        <div class="detail-value">
+          <div class="radio-group">
+            <div class="radio-item" ${yesClick}>
+              <span class="radio-dot ${yesActive}"></span>
+              <span>是</span>
+            </div>
+            <div class="radio-item" ${noClick}>
+              <span class="radio-dot ${noActive}"></span>
+              <span>否</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDetailPage(id){
+      const item = getData().find(x => x.id === id);
+      if(!item) return;
+      const canEdit = isUnlocked();
+
+      const infoBox = document.getElementById("detailInfoBox");
+      const outBox = document.getElementById("detailOutBox");
+
+      infoBox.innerHTML = `
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>学期</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'term', '学期', 'detail')">${detailText(item.term)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>请假时间</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'timeRange', '请假时间', 'detail')">${detailText(item.startTime + " 至 " + item.endTime)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">共计</div>
+          <div class="detail-value">${detailText(item.duration)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>请假类型</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'leaveType', '请假类型', 'detail')">${detailText(item.leaveType)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>请假原因</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'leaveReason', '请假原因', 'detail')">${detailText(item.leaveReason)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">详细说明</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'detailDesc', '详细说明', 'detail')">${detailText(item.detailDesc)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">本人移动电话</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'mobilePhone', '本人移动电话', 'detail')">${detailText(item.mobilePhone)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>是否已告知监护人</div>
+          ${renderRadioRow(id, 'informedGuardian', item.informedGuardian)}
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">监护人姓名</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'guardianName', '监护人姓名', 'detail')">${detailText(item.guardianName)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">监护人电话</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'guardianPhone', '监护人电话', 'detail')">${detailText(item.guardianPhone)}</div>
+        </div>
+      `;
+
+      outBox.innerHTML = `
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>是否离校</div>
+          ${renderRadioRow(id, 'isLeaveSchool', item.isLeaveSchool)}
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>是否离开廊坊</div>
+          ${renderRadioRow(id, 'isLeaveDorm', item.isLeaveDorm)}
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>外出地点</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'outPlace', '外出地点', 'detail')">${detailText(item.outPlace)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">外出详细地点</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'outDetailPlace', '外出详细地点', 'detail')">${detailText(item.outDetailPlace)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>外出时间</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'detailTimeRange', '外出时间', 'detail')">${detailText(item.outStartTime + " 至 " + item.outEndTime)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>外出方式（去）</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'outWayGo', '外出方式（去）', 'detail')">${detailText(item.outWayGo)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>外出方式（回）</div>
+          <div class="detail-value ${canEdit ? 'editable' : ''}" onclick="openFieldEditor(${id}, 'outWayBack', '外出方式（回）', 'detail')">${detailText(item.outWayBack)}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label"><span class="required">*</span>是否结伴同行</div>
+          ${renderRadioRow(id, 'withCompanion', item.withCompanion)}
+        </div>
+      `;
+    }
+
+    function setRadioValue(id, key, value){
+      if(!requireUnlock()) return;
       const data = getData();
       const item = data.find(x => x.id === id);
       if(!item) return;
-      item.showTimeline = !item.showTimeline;
+      item[key] = value;
       setData(data);
+      renderDetailPage(id);
       render();
+      showToast("已保存");
     }
 
     function openAddSheet(){
       if(!requireUnlock()) return;
-      clearAddForm();
+      clearAddForm(false);
       document.getElementById("addMask").style.display = "flex";
     }
 
@@ -862,7 +1135,7 @@
       document.getElementById("addMask").style.display = "none";
     }
 
-    function clearAddForm(){
+    function clearAddForm(showMsg=true){
       document.getElementById("aStudentId").value = "";
       document.getElementById("aStudentName").value = "";
       document.getElementById("aStartTime").value = "";
@@ -872,8 +1145,7 @@
       document.getElementById("aReason").value = "";
       document.getElementById("aCancelStatus").value = "";
       document.getElementById("aTagType").value = "";
-      document.getElementById("aTimeline").value = "";
-      showToast("新增内容已清空");
+      if(showMsg) showToast("新增内容已清空");
     }
 
     function saveAddSheet(){
@@ -886,29 +1158,14 @@
       const reason = normalizeReasonText(document.getElementById("aReason").value.trim());
       const cancelStatus = document.getElementById("aCancelStatus").value;
       const tagType = document.getElementById("aTagType").value;
-      const timelineText = document.getElementById("aTimeline").value.trim();
 
       if(!startTime || !endTime || !duration){
         showToast("请先选择有效的请假区间");
         return;
       }
 
-      let timeline = [];
-      if(timelineText){
-        try{
-          timeline = JSON.parse(timelineText);
-          if(!Array.isArray(timeline)){
-            alert("审批流必须是数组 JSON");
-            return;
-          }
-        }catch(e){
-          alert("审批流 JSON 格式错误");
-          return;
-        }
-      }
-
       const data = getData();
-      data.unshift({
+      data.unshift(ensureDetailFields({
         id: Date.now(),
         studentId,
         studentName,
@@ -919,9 +1176,25 @@
         reason,
         cancelStatus,
         tagType,
-        showTimeline: !!timeline.length,
-        timeline
-      });
+
+        term: "2025-2026学年第二学期",
+        leaveType: "校外",
+        leaveReason: "事假",
+        detailDesc: "",
+        mobilePhone: "",
+        informedGuardian: "是",
+        guardianName: "",
+        guardianPhone: "",
+        isLeaveSchool: "是",
+        isLeaveDorm: "是",
+        outPlace: "",
+        outDetailPlace: "",
+        outStartTime: startTime,
+        outEndTime: endTime,
+        outWayGo: "打车",
+        outWayBack: "打车",
+        withCompanion: "是"
+      }));
 
       setData(data);
       closeAddSheet();
@@ -932,13 +1205,13 @@
     function updateAddDuration(){
       const start = fromDatetimeLocal(document.getElementById("aStartTime").value);
       const end = fromDatetimeLocal(document.getElementById("aEndTime").value);
-      document.getElementById("aDuration").value = calcDurationText(start, end);
+      document.getElementById("aDuration").value = calcDurationText2(start, end);
     }
 
     function updateFieldDuration(){
       const start = fromDatetimeLocal(document.getElementById("fieldStartTime").value);
       const end = fromDatetimeLocal(document.getElementById("fieldEndTime").value);
-      document.getElementById("fieldDurationPreview").value = calcDurationText(start, end);
+      document.getElementById("fieldDurationPreview").value = calcDurationText2(start, end);
     }
 
     document.getElementById("aStartTime").addEventListener("change", updateAddDuration);
@@ -956,8 +1229,14 @@
       if(e.target.id === "addMask") closeAddSheet();
     });
 
-    localStorage.removeItem(UNLOCK_KEY);
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape" && currentDetailId !== null){
+        closeDetailPage();
+      }
+    });
+
     setUnlocked(false);
+    setWechatTitle("日常请假列表");
     render();
     bindSecretTrigger();
   </script>
