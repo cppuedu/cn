@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+  >
+
+  <title>首页</title>
+
+  <style>
+    :root {
+      --page-width: 440px;
+      --page-bg: #f3f8fc;
+      --blue: #0860cd;
+      --cyan: #2ecbd4;
+      --text: #303236;
+      --gray: #929bb6;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: #e6eaed;
+      color: var(--text);
+      font-family:
+        "PingFang SC",
+        "Microsoft YaHei",
+        "HarmonyOS Sans SC",
+        Arial,
+        sans-serif;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      outline: 0;
+      padding: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .app {
+      position: relative;
+      width: 100%;
+      max-width: var(--page-width);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding-bottom: calc(86px + var(--safe-bottom));
+      overflow: hidden;
+      background: var(--page-bg);
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.08);
+    }
+
+    /* 顶部 Logo 区域，已经删除手机状态栏和首页标题栏 */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 246px;
+      padding: 0 17px;
+      overflow: hidden;
+      background: linear-gradient(
+        180deg,
+        #e7f2ff 0%,
+        #edf6ff 66%,
+        #f2f8fc 100%
+      );
+    }
+
+    .unlock-zone {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 99px;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .school-logo {
+      display: block;
+      width: 59%;
+      max-width: 258px;
+      max-height: 62px;
+      height: auto;
+      object-fit: contain;
+      object-position: left center;
+    }
+
+    .logo-fallback {
+      display: none;
+      align-items: center;
+      color: #173961;
+    }
+
+    .logo-fallback-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      margin-right: 10px;
+      color: #167668;
+      font-size: 20px;
+      font-weight: 700;
+      border: 2px solid #aa9a6d;
+      border-radius: 50%;
+    }
+
+    .logo-fallback-cn {
+      font-family: serif;
+      font-size: 20px;
+      letter-spacing: 4px;
+      white-space: nowrap;
+    }
+
+    .logo-fallback-en {
+      margin-top: 3px;
+      font-family: serif;
+      font-size: 8px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    /*
+      学生蓝色信息卡
+      右侧使用 campus-card.png 作为背景图片。
+    */
+    .student-card {
+      position: relative;
+      width: 100%;
+      height: 124px;
+      overflow: hidden;
+      color: #fff;
+      border-radius: 13px;
+      background: #0861d0;
+      box-shadow: 0 5px 13px rgba(5, 76, 170, 0.13);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /*
+      右侧校园背景图。
+      通过左侧蓝色渐变，让图片与截图中的蓝色卡片自然融合。
+    */
+    .campus-photo {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 58%;
+      overflow: hidden;
+      opacity: 1;
+      background-image:
+        linear-gradient(
+          90deg,
+          #0861d0 0%,
+          rgba(8, 97, 208, 0.92) 10%,
+          rgba(8, 97, 208, 0.58) 31%,
+          rgba(8, 97, 208, 0.22) 62%,
+          rgba(8, 97, 208, 0.06) 100%
+        ),
+        url("./campus-card.png");
+      background-repeat: no-repeat;
+      background-position: center, center bottom;
+      background-size: cover, cover;
+      background-blend-mode: normal, normal;
+    }
+
+    .campus-photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(8, 97, 208, 0.04) 0%,
+        rgba(8, 97, 208, 0.15) 44%,
+        rgba(3, 71, 166, 0.38) 100%
+      );
+    }
+
+    .campus-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at 75% 92%,
+        rgba(255, 255, 255, 0.15) 0,
+        rgba(255, 255, 255, 0) 45%
+      );
+    }
+
+    .student-card::before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      top: 4px;
+      left: 15px;
+      width: 95px;
+      height: 34px;
+      opacity: 0.13;
+      background-image: radial-gradient(
+        circle,
+        #ffffff 0 2px,
+        transparent 2.4px
+      );
+      background-size: 10px 10px;
+    }
+
+    .student-card::after {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      left: 125px;
+      bottom: -47px;
+      width: 110px;
+      height: 78px;
+      opacity: 0.12;
+      border-radius: 50%;
+      background: linear-gradient(
+        135deg,
+        transparent 5%,
+        #ffffff 100%
+      );
+    }
+
+    .identity-tag {
+      position: absolute;
+      z-index: 6;
+      top: 0;
+      right: 0;
+      min-width: 63px;
+      height: 24px;
+      padding: 0 13px;
+      color: #fff;
+      font-size: 15px;
+      line-height: 24px;
+      text-align: center;
+      border-radius: 0 0 0 16px;
+      background: #5bc4c9;
+    }
+
+    .student-content {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding: 22px 12px;
+    }
+
+    .avatar-shell {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 77px;
+      height: 77px;
+      flex: 0 0 77px;
+      overflow: hidden;
+      border-radius: 11px;
+      background: radial-gradient(
+        circle at center,
+        #f7f9fc 0%,
+        #cbe5ff 53%,
+        rgba(124, 189, 255, 0.8) 100%
+      );
+      box-shadow:
+        inset 0 0 15px rgba(255, 255, 255, 0.65),
+        0 2px 7px rgba(0, 44, 114, 0.22);
+    }
+
+    .avatar-shell::before {
+      content: "";
+      position: absolute;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: #e1282e;
+    }
+
+    .student-avatar {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .student-info {
+      min-width: 0;
+      margin-left: 13px;
+    }
+
+    .student-name-row {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .student-name {
+      max-width: 145px;
+      overflow: hidden;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 27px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .student-sex {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      margin-left: 10px;
+      padding: 0 7px;
+      color: #fff;
+      font-size: 13px;
+      line-height: 22px;
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .student-sex-symbol {
+      margin-right: 3px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .student-college {
+      max-width: 190px;
+      margin-top: 4px;
+      overflow: hidden;
+      color: #fff;
+      font-size: 15px;
+      line-height: 22px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 待办事项 */
+    .todo-section {
+      padding: 17px 17px 0;
+    }
+
+    .todo-card {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 57px;
+      padding: 0 17px;
+      overflow: hidden;
+      border-radius: 7px;
+      background: #fff;
+      box-shadow: 0 0 12px rgba(37, 205, 214, 0.19);
+    }
+
+    .pin-icon {
+      position: relative;
+      width: 23px;
+      height: 23px;
+      flex: 0 0 23px;
+      margin-right: 10px;
+      transform: rotate(-43deg);
+    }
+
+    .pin-icon::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      width: 13px;
+      height: 13px;
+      border-radius: 3px 8px 3px 8px;
+      background: #2bced5;
+    }
+
+    .pin-icon::after {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: 10px;
+      width: 4px;
+      height: 10px;
+      border-radius: 2px;
+      background: #2bced5;
+    }
+
+    .todo-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      color: #35373a;
+      font-size: 14px;
+      line-height: 22px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chevron {
+      width: 11px;
+      height: 11px;
+      flex: 0 0 11px;
+      margin-left: 10px;
+      border-top: 1.8px solid currentColor;
+      border-right: 1.8px solid currentColor;
+      transform: rotate(45deg);
+    }
+
+    /* 功能菜单 */
+    .functions {
+      padding: 28px 14px 31px;
+    }
+
+    .function-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 4px;
+      row-gap: 29px;
+    }
+
+    .function-item {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: center;
+      color: #343638;
+      text-align: center;
+      background: transparent;
+      cursor: default;
+      user-select: none;
+    }
+
+    a.function-item {
+      cursor: pointer;
+    }
+
+    .function-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      margin-bottom: 10px;
+      color: #fff;
+      border-radius: 50%;
+      filter: drop-shadow(5px 4px 0 rgba(134, 193, 232, 0.19));
+    }
+
+    .function-icon svg {
+      display: block;
+      width: 33px;
+      height: 33px;
+      overflow: visible;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .function-icon svg .fill {
+      fill: currentColor;
+      stroke: none;
+    }
+
+    .function-label {
+      width: 100%;
+      min-height: 21px;
+      color: #343638;
+      font-size: 15px;
+      line-height: 21px;
+      white-space: nowrap;
+    }
+
+    .gradient-coral {
+      background: linear-gradient(145deg, #ff997a 0%, #ff5d61 100%);
+      box-shadow: 7px 5px 0 rgba(255, 188, 181, 0.33);
+    }
+
+    .gradient-cyan {
+      background: linear-gradient(145deg, #45e4e2 0%, #2ebed8 100%);
+      box-shadow: 7px 5px 0 rgba(154, 228, 234, 0.35);
+    }
+
+    .gradient-pink {
+      background: linear-gradient(145deg, #ff4c89 0%, #f33383 100%);
+      box-shadow: 7px 5px 0 rgba(255, 163, 190, 0.33);
+    }
+
+    .gradient-blue {
+      background: linear-gradient(145deg, #68c9f5 0%, #507aed 100%);
+      box-shadow: 7px 5px 0 rgba(151, 202, 244, 0.31);
+    }
+
+    .gradient-purple {
+      background: linear-gradient(145deg, #ce43ed 0%, #9e24d8 100%);
+      box-shadow: 7px 5px 0 rgba(214, 146, 236, 0.29);
+    }
+
+    /* 通知公告 */
+    .notice-section {
+      padding: 29px 18px 17px;
+      border-radius: 29px 29px 0 0;
+      background: #fff;
+    }
+
+    .notice-panel {
+      position: relative;
+      min-height: 400px;
+      overflow: hidden;
+      padding: 91px 18px 17px;
+      border-radius: 11px;
+      background:
+        radial-gradient(
+          circle at 88% 10%,
+          rgba(88, 178, 238, 0.12),
+          transparent 25%
+        ),
+        linear-gradient(
+          180deg,
+          #e8f7ff 0%,
+          #f4faff 57%,
+          #ffffff 100%
+        );
+    }
+
+    .notice-panel::after {
+      content: "♙  ♙";
+      position: absolute;
+      top: 19px;
+      right: 18px;
+      color: rgba(76, 165, 224, 0.1);
+      font-size: 36px;
+      letter-spacing: -12px;
+      transform: rotate(-4deg);
+    }
+
+    .notice-ribbon {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      width: 106px;
+      height: 50px;
+      color: #fff;
+      font-size: 17px;
+      line-height: 47px;
+      text-align: center;
+      border-radius: 11px 0 21px 0;
+      background: #075bca;
+      transform: skewX(-13deg);
+      transform-origin: left top;
+    }
+
+    .notice-ribbon span {
+      display: block;
+      transform: skewX(13deg);
+    }
+
+    .notice-item {
+      position: relative;
+      z-index: 2;
+      padding-bottom: 20px;
+      margin-bottom: 19px;
+      border-bottom: 1px solid #dfe4ee;
+    }
+
+    .notice-item-title {
+      overflow: hidden;
+      color: #050505;
+      font-size: 16px;
+      line-height: 25px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .notice-date {
+      margin-top: 13px;
+      color: #929bb7;
+      font-size: 15px;
+      line-height: 20px;
+    }
+
+    .more-row {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 43px;
+      color: #929bb7;
+      font-size: 15px;
+      background: transparent;
+    }
+
+    .more-row .chevron {
+      width: 9px;
+      height: 9px;
+      margin-left: 11px;
+    }
+
+    /* 学工快讯 */
+    .news-section {
+      margin-top: 11px;
+      background: #fff;
+    }
+
+    .news-header {
+      display: flex;
+      align-items: center;
+      min-height: 72px;
+      padding: 0 18px;
+    }
+
+    .news-shield {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 27px;
+      height: 33px;
+      margin-right: 9px;
+      color: #fff;
+      background: linear-gradient(180deg, #32a7ed, #0063ca);
+      clip-path: polygon(
+        50% 0,
+        91% 13%,
+        87% 70%,
+        50% 100%,
+        13% 70%,
+        9% 13%
+      );
+    }
+
+    .news-shield::before {
+      content: "☆";
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .news-heading {
+      color: #061f45;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .news-more {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      color: #929bb7;
+      font-size: 15px;
+      background: transparent;
+    }
+
+    .news-more .chevron {
+      width: 9px;
+      height: 9px;
+    }
+
+    .news-item {
+      min-height: 112px;
+      padding: 26px 18px 18px;
+      border-bottom: 1px solid #e7e9ee;
+    }
+
+    .news-item:last-child {
+      border-bottom: 0;
+    }
+
+    .news-item-title {
+      overflow: hidden;
+      color: #2a2b2d;
+      font-size: 16px;
+      line-height: 24px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .news-date {
+      margin-top: 19px;
+      color: #929bb7;
+      font-size: 15px;
+    }
+
+    /* 底部导航 */
+    .bottom-nav {
+      position: fixed;
+      z-index: 100;
+      bottom: 0;
+      left: 50%;
+      display: flex;
+      width: 100%;
+      max-width: var(--page-width);
+      height: calc(82px + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
+      border-top: 1px solid #e6f0f2;
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 -3px 14px rgba(40, 205, 213, 0.11);
+      transform: translateX(-50%);
+    }
+
+    .nav-item {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 12px;
+      color: #919392;
+      font-size: 14px;
+      background: transparent;
+    }
+
+    .nav-item.active {
+      color: #2dcbd3;
+    }
+
+    .nav-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 29px;
+      height: 29px;
+      margin-bottom: 4px;
+    }
+
+    .nav-icon svg {
+      display: block;
+      width: 29px;
+      height: 29px;
+      overflow: visible;
+      fill: currentColor;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* 密码弹窗 */
+    .modal-mask {
+      position: fixed;
+      z-index: 500;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(0, 0, 0, 0.47);
+    }
+
+    .modal-mask.show {
+      display: flex;
+    }
+
+    .password-dialog {
+      width: 100%;
+      max-width: 365px;
+      padding: 21px 19px 18px;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.19);
+    }
+
+    .dialog-title {
+      color: #222;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .dialog-description {
+      margin-top: 7px;
+      color: #8c9299;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .password-input {
+      display: block;
+      width: 100%;
+      height: 46px;
+      margin-top: 18px;
+      padding: 0 13px;
+      color: #222;
+      font-size: 18px;
+      letter-spacing: 5px;
+      text-align: center;
+      border: 1px solid #dfe3e7;
+      border-radius: 9px;
+      outline: none;
+      background: #f8fafb;
+    }
+
+    .password-input:focus {
+      border-color: #2dcbd3;
+      box-shadow: 0 0 0 3px rgba(45, 203, 211, 0.12);
+    }
+
+    .password-error {
+      min-height: 20px;
+      margin-top: 7px;
+      color: #e94e52;
+      font-size: 12px;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .dialog-actions {
+      display: flex;
+      gap: 11px;
+      margin-top: 8px;
+    }
+
+    .dialog-button {
+      flex: 1;
+      height: 43px;
+      border-radius: 9px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .button-cancel {
+      color: #45484b;
+      background: #f0f2f4;
+    }
+
+    .button-confirm {
+      color: #fff;
+      background: linear-gradient(90deg, #37d3d4, #37b9e9);
+    }
+
+    /* 编辑学生信息面板 */
+    .editor-mask {
+      position: fixed;
+      z-index: 600;
+      inset: 0;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.47);
+    }
+
+    .editor-mask.show {
+      display: flex;
+    }
+
+    .editor-sheet {
+      width: 100%;
+      max-width: var(--page-width);
+      max-height: 90vh;
+      padding: 10px 18px calc(21px + var(--safe-bottom));
+      overflow-y: auto;
+      border-radius: 18px 18px 0 0;
+      background: #fff;
+    }
+
+    .sheet-handle {
+      width: 41px;
+      height: 5px;
+      margin: 0 auto 13px;
+      border-radius: 5px;
+      background: #d7dade;
+    }
+
+    .sheet-title {
+      margin-bottom: 17px;
+      color: #242628;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .avatar-editor {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f4f7f9;
+    }
+
+    .avatar-preview {
+      width: 66px;
+      height: 66px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #e6ebef;
+    }
+
+    .avatar-editor-info {
+      margin-left: 14px;
+    }
+
+    .avatar-button {
+      height: 36px;
+      padding: 0 17px;
+      color: #fff;
+      font-size: 14px;
+      border-radius: 19px;
+      background: linear-gradient(90deg, #35d1d4, #36b8e7);
+      cursor: pointer;
+    }
+
+    .avatar-tip {
+      margin-top: 6px;
+      color: #92989f;
+      font-size: 11px;
+    }
+
+    #avatarFile {
+      display: none;
+    }
+
+    .form-item {
+      margin-bottom: 13px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #686e74;
+      font-size: 13px;
+    }
+
+    .form-control {
+      display: block;
+      width: 100%;
+      height: 44px;
+      padding: 0 12px;
+      color: #242628;
+      font-size: 15px;
+      border: 1px solid #e0e4e8;
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      border-color: #2dcbd3;
+      box-shadow: 0 0 0 3px rgba(45, 203, 211, 0.11);
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 11px;
+      margin-top: 19px;
+    }
+
+    .editor-button {
+      flex: 1;
+      height: 44px;
+      border-radius: 9px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .editor-cancel {
+      color: #45484b;
+      background: #f0f2f4;
+    }
+
+    .editor-save {
+      color: #fff;
+      background: linear-gradient(90deg, #37d3d4, #37b9e9);
+    }
+
+    @media (max-width: 370px) {
+      .hero {
+        height: 234px;
+        padding-right: 14px;
+        padding-left: 14px;
+      }
+
+      .unlock-zone {
+        height: 94px;
+      }
+
+      .student-card {
+        height: 119px;
+      }
+
+      .avatar-shell {
+        width: 72px;
+        height: 72px;
+        flex-basis: 72px;
+      }
+
+      .student-name {
+        max-width: 112px;
+        font-size: 19px;
+      }
+
+      .student-college {
+        max-width: 150px;
+      }
+
+      .function-label {
+        font-size: 14px;
+      }
+
+      .todo-section {
+        padding-right: 14px;
+        padding-left: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- 顶部 Logo，连续点击这里 5 次后输入密码 -->
+    <section class="hero">
+      <div
+        class="unlock-zone"
+        id="unlockZone"
+        aria-label="学校标识"
+      >
+        <img
+          class="school-logo"
+          id="schoolLogo"
+          src="./cppu-logo.png"
+          alt="中国人民警察大学"
+          draggable="false"
+        >
+
+        <div
+          class="logo-fallback"
+          id="logoFallback"
+        >
+          <div class="logo-fallback-badge">警</div>
+
+          <div>
+            <div class="logo-fallback-cn">
+              中国人民警察大学
+            </div>
+
+            <div class="logo-fallback-en">
+              China People's Police University
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 学生信息卡 -->
+      <div
+        class="student-card"
+        id="studentCard"
+        role="button"
+        tabindex="0"
+        aria-label="学生信息"
+      >
+        <div class="campus-photo"></div>
+
+        <div
+          class="identity-tag"
+          id="identityText"
+        >
+          学生
+        </div>
+
+        <div class="student-content">
+          <div class="avatar-shell">
+            <img
+              class="student-avatar"
+              id="studentAvatar"
+              src="./avatar.jpg"
+              alt="学生头像"
+            >
+          </div>
+
+          <div class="student-info">
+            <div class="student-name-row">
+              <span
+                class="student-name"
+                id="studentName"
+              >
+                梁思源
+              </span>
+
+              <span class="student-sex">
+                <span
+                  class="student-sex-symbol"
+                  id="sexSymbol"
+                >
+                  ♂
+                </span>
+
+                <span id="sexText">男</span>
+              </span>
+            </div>
+
+            <div
+              class="student-college"
+              id="studentCollege"
+            >
+              研究生院
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 待办事项 -->
+    <section class="todo-section">
+      <div class="todo-card">
+        <span class="pin-icon"></span>
+
+        <span class="todo-text">
+          待办事项：［通知公告］关于举办学校第四届大学生职业规划大赛的通知
+        </span>
+
+        <span class="chevron"></span>
+      </div>
+    </section>
+
+    <!-- 功能菜单 -->
+    <section class="functions">
+      <div class="function-grid">
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-coral">
+            <svg viewBox="0 0 40 40">
+              <circle cx="20" cy="11" r="6"></circle>
+              <path d="M10 32v-5c0-6 4-9 10-9s10 3 10 9v5"></path>
+              <path d="M16 20l4 5 4-5"></path>
+            </svg>
+          </span>
+          <span class="function-label">我的学管干部</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-cyan">
+            <svg viewBox="0 0 40 40">
+              <rect x="8" y="8" width="22" height="25" rx="3"></rect>
+              <path d="M13 15h11M13 20h8M13 25h6"></path>
+              <circle cx="29" cy="27" r="5"></circle>
+              <path d="M33 31l4 4"></path>
+            </svg>
+          </span>
+          <span class="function-label">信息查询</span>
+        </button>
+
+        <a
+          class="function-item"
+          href="./index5.0.html"
+        >
+          <span class="function-icon gradient-pink">
+            <svg viewBox="0 0 40 40">
+              <rect x="9" y="7" width="22" height="27" rx="3"></rect>
+              <path d="M14 14h8M14 20h12M14 26h9"></path>
+              <circle cx="30" cy="11" r="5"></circle>
+              <path d="M27.5 11l1.7 1.8 3.3-4"></path>
+            </svg>
+          </span>
+          <span class="function-label">日常请假申请</span>
+        </a>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-blue">
+            <svg viewBox="0 0 40 40">
+              <path
+                class="fill"
+                d="M35 6 7 19l11 4 4 11L35 6Z"
+              ></path>
+              <path d="m18 23 10-10M18 23l3 4"></path>
+            </svg>
+          </span>
+          <span class="function-label">寒暑假去向</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-purple">
+            <svg viewBox="0 0 40 40">
+              <path d="M10 18h20v15H10z"></path>
+              <path d="M14 18v-3l6-7 6 7v3"></path>
+              <circle class="fill" cx="15" cy="25" r="2"></circle>
+              <circle class="fill" cx="20" cy="25" r="2"></circle>
+              <circle class="fill" cx="25" cy="25" r="2"></circle>
+            </svg>
+          </span>
+          <span class="function-label">勤工助学</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-coral">
+            <svg viewBox="0 0 40 40">
+              <rect x="7" y="11" width="26" height="19" rx="2"></rect>
+              <path d="m8 13 12 10 12-10"></path>
+            </svg>
+          </span>
+          <span class="function-label">学生留言簿</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-cyan">
+            <svg viewBox="0 0 40 40">
+              <path d="M12 7h16v5H12z"></path>
+              <path d="M9 11h22v23H9z"></path>
+              <path d="m14 23 4 4 8-10"></path>
+            </svg>
+          </span>
+          <span class="function-label">问卷调查</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-pink">
+            <svg viewBox="0 0 40 40">
+              <rect class="fill" x="9" y="22" width="5" height="10" rx="1"></rect>
+              <rect class="fill" x="18" y="14" width="5" height="18" rx="1"></rect>
+              <rect class="fill" x="27" y="8" width="5" height="24" rx="1"></rect>
+            </svg>
+          </span>
+          <span class="function-label">在线投票</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-blue">
+            <svg viewBox="0 0 40 40">
+              <rect x="6" y="9" width="27" height="21" rx="3"></rect>
+              <circle cx="14" cy="18" r="3"></circle>
+              <path d="M9 26c1-4 3-6 6-6s5 2 6 6M23 15h6M23 20h5"></path>
+              <circle cx="31" cy="27" r="5"></circle>
+              <path d="M31 24v6M28 27h6"></path>
+            </svg>
+          </span>
+          <span class="function-label">证件补办申请</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-purple">
+            <svg viewBox="0 0 40 40">
+              <rect x="9" y="7" width="19" height="27" rx="3"></rect>
+              <path d="M14 14h9M14 20h7M14 26h5"></path>
+              <path d="m24 29 8-12 3 2-8 12-5 2z"></path>
+            </svg>
+          </span>
+          <span class="function-label">入学登记</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-coral">
+            <svg viewBox="0 0 40 40">
+              <rect x="8" y="9" width="25" height="24" rx="3"></rect>
+              <path d="M14 6v7M27 6v7M9 15h23"></path>
+              <circle cx="16" cy="23" r="3"></circle>
+              <path d="M12 30c1-4 3-5 5-5s4 1 5 5M25 22h4M25 27h4"></path>
+            </svg>
+          </span>
+          <span class="function-label">毕业生登记</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-cyan">
+            <svg viewBox="0 0 40 40">
+              <circle class="fill" cx="20" cy="12" r="6"></circle>
+              <path
+                class="fill"
+                d="M9 33v-5c0-7 4-10 11-10s11 3 11 10v5z"
+              ></path>
+            </svg>
+          </span>
+          <span class="function-label">团学类干部</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-pink">
+            <svg viewBox="0 0 40 40">
+              <circle class="fill" cx="20" cy="12" r="6"></circle>
+              <path
+                class="fill"
+                d="M9 33v-5c0-7 4-10 11-10s11 3 11 10v5z"
+              ></path>
+            </svg>
+          </span>
+          <span class="function-label">专班类干部</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-blue">
+            <svg viewBox="0 0 40 40">
+              <circle cx="20" cy="11" r="5"></circle>
+              <path d="M11 30v-5c0-5 3-8 9-8s9 3 9 8v5"></path>
+              <path d="M8 31h24v4H8z"></path>
+            </svg>
+          </span>
+          <span class="function-label">用章申请</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-purple">
+            <svg viewBox="0 0 40 40">
+              <rect x="8" y="10" width="25" height="23" rx="3"></rect>
+              <path d="M14 7v7M27 7v7M9 16h23"></path>
+              <path d="m14 24 4 4 9-10"></path>
+            </svg>
+          </span>
+          <span class="function-label">考务签到</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-coral">
+            <svg viewBox="0 0 40 40">
+              <path d="M11 8h18v8c0 7-4 11-9 11s-9-4-9-11z"></path>
+              <path d="M11 12H7v4c0 4 3 6 7 6M29 12h4v4c0 4-3 6-7 6"></path>
+              <path d="M20 27v5M14 34h12"></path>
+              <path
+                class="fill"
+                d="m20 11 1.5 3 3.5.5-2.5 2.5.6 3.5-3.1-1.6-3.1 1.6.6-3.5-2.5-2.5 3.5-.5z"
+              ></path>
+            </svg>
+          </span>
+          <span class="function-label">奖助学金</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-cyan">
+            <svg viewBox="0 0 40 40">
+              <path class="fill" d="M7 15h26l-3 17H10z"></path>
+              <path d="M9 15v-4h9l2 3h11"></path>
+              <path d="M13 11h16"></path>
+            </svg>
+          </span>
+          <span class="function-label">学生档案管理</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-pink">
+            <svg viewBox="0 0 40 40">
+              <path d="M8 19h24v14H8z"></path>
+              <path d="M20 19v14M8 24h24"></path>
+              <path d="M20 19c-7 0-10-2-10-5 0-2 2-4 4-4 3 0 5 4 6 9z"></path>
+              <path d="M20 19c7 0 10-2 10-5 0-2-2-4-4-4-3 0-5 4-6 9z"></path>
+              <circle cx="30" cy="29" r="5"></circle>
+              <path d="M30 26v6M27 29h6"></path>
+            </svg>
+          </span>
+          <span class="function-label">学生教育活动管理</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-blue">
+            <svg viewBox="0 0 40 40">
+              <rect x="6" y="9" width="28" height="22" rx="3"></rect>
+              <path d="M11 15h13M11 20h9M11 25h8"></path>
+              <circle cx="28" cy="20" r="3"></circle>
+              <path d="M23 28c1-4 3-6 6-6s5 2 6 6"></path>
+            </svg>
+          </span>
+          <span class="function-label">电子学生证</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-purple">
+            <svg viewBox="0 0 40 40">
+              <rect class="fill" x="5" y="10" width="24" height="21" rx="3"></rect>
+              <path class="fill" d="m29 17 7-4v15l-7-4z"></path>
+              <path
+                d="m15 16 7 5-7 5z"
+                fill="#ae2be0"
+                stroke="none"
+              ></path>
+            </svg>
+          </span>
+          <span class="function-label">入学/毕业教育</span>
+        </button>
+
+        <button class="function-item" type="button">
+          <span class="function-icon gradient-coral">
+            <svg viewBox="0 0 40 40">
+              <path d="m9 31 4-11 13-13 7 7-13 13z"></path>
+              <path d="m13 20 7 7M26 7l2-2 7 7-2 2"></path>
+              <circle cx="30" cy="29" r="5"></circle>
+              <path d="M30 26v6M27 29h6"></path>
+            </svg>
+          </span>
+          <span class="function-label">加分内容提交</span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- 通知公告 -->
+    <section class="notice-section">
+      <div class="notice-panel">
+        <div class="notice-ribbon">
+          <span>通知公告</span>
+        </div>
+
+        <div class="notice-item">
+          <div class="notice-item-title">
+            关于举办学校第四届大学生职业规划大赛的通知
+          </div>
+
+          <div class="notice-date">
+            2026-09-16
+          </div>
+        </div>
+
+        <div class="notice-item">
+          <div class="notice-item-title">
+            关于开展学生干部调整工作的通知
+          </div>
+
+          <div class="notice-date">
+            2026-09-11
+          </div>
+        </div>
+
+        <div class="notice-item">
+          <div class="notice-item-title">
+            关于开展2026-2027学年校园地国家助学贷款工作…
+          </div>
+
+          <div class="notice-date">
+            2026-09-02
+          </div>
+        </div>
+
+        <button class="more-row" type="button">
+          查看更多
+          <span class="chevron"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 学工快讯 -->
+    <section class="news-section">
+      <div class="news-header">
+        <span class="news-shield"></span>
+        <span class="news-heading">学工快讯</span>
+
+        <button class="news-more" type="button">
+          查看更多
+          <span class="chevron"></span>
+        </button>
+      </div>
+
+      <div class="news-item">
+        <div class="news-item-title">
+          关于对黄山等340名学生予以表扬的通报
+        </div>
+
+        <div class="news-date">
+          2025-04-27
+        </div>
+      </div>
+
+      <div class="news-item">
+        <div class="news-item-title">
+          学校召开2023年春季校园地入伍学生欢送会
+        </div>
+
+        <div class="news-date">
+          2023-03-01
+        </div>
+      </div>
+    </section>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav">
+      <button
+        class="nav-item active"
+        type="button"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M3 15 16 4l13 11-3 1v12h-8v-8h-4v8H6V16z"></path>
+          </svg>
+        </span>
+        <span>首页</span>
+      </button>
+
+      <!-- 按截图形状修改后的通讯录图标 -->
+      <button
+        class="nav-item"
+        type="button"
+      >
+        <span class="nav-icon">
+          <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+          >
+            <!-- 通讯录主体 -->
+            <rect
+              x="8"
+              y="4"
+              width="19"
+              height="24"
+              rx="3"
+              fill="currentColor"
+              stroke="none"
+            ></rect>
+            <!-- 左侧分页凸起 -->
+            <path
+              d="M8 8H5.5M8 13H5.5M8 18H5.5M8 23H5.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.6"
+              stroke-linecap="round"
+            ></path>
+            <!-- 白色电话听筒 -->
+            <path
+              d="M15.2 9.1c-.85.22-1.45.75-1.75 1.48-.48 1.19-.06 3.42 1.35 5.79 1.45 2.43 3.33 4.05 4.58 4.19.78.09 1.47-.22 2.01-.93l1.17-1.54-2.33-2.22-1.31 1.05c-.32-.14-.88-.53-1.47-1.17-.56-.62-1.02-1.35-1.2-1.72l.86-1.43-1.91-2.93z"
+              fill="#ffffff"
+              stroke="none"
+            ></path>
+          </svg>
+        </span>
+        <span>通讯录</span>
+      </button>
+
+      <button
+        class="nav-item"
+        type="button"
+      >
+        <span class="nav-icon">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="16" cy="9" r="6"></circle>
+            <path d="M5 29v-4c0-7 4-10 11-10s11 3 11 10v4z"></path>
+          </svg>
+        </span>
+        <span>我的</span>
+      </button>
+    </nav>
+  </main>
+
+  <!-- 密码窗口 -->
+  <div
+    class="modal-mask"
+    id="passwordMask"
+  >
+    <div class="password-dialog">
+      <div class="dialog-title">
+        身份验证
+      </div>
+
+      <div class="dialog-description">
+        请输入管理密码后编辑学生信息
+      </div>
+
+      <input
+        class="password-input"
+        id="passwordInput"
+        type="password"
+        inputmode="numeric"
+        maxlength="6"
+        autocomplete="off"
+        placeholder="请输入密码"
+      >
+
+      <div
+        class="password-error"
+        id="passwordError"
+      ></div>
+
+      <div class="dialog-actions">
+        <button
+          class="dialog-button button-cancel"
+          id="passwordCancel"
+          type="button"
+        >
+          取消
+        </button>
+
+        <button
+          class="dialog-button button-confirm"
+          id="passwordConfirm"
+          type="button"
+        >
+          确认
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 学生信息编辑窗口 -->
+  <div
+    class="editor-mask"
+    id="editorMask"
+  >
+    <div class="editor-sheet">
+      <div class="sheet-handle"></div>
+
+      <div class="sheet-title">
+        编辑学生信息
+      </div>
+
+      <div class="avatar-editor">
+        <img
+          class="avatar-preview"
+          id="avatarPreview"
+          src="./avatar.jpg"
+          alt="头像预览"
+        >
+
+        <div class="avatar-editor-info">
+          <button
+            class="avatar-button"
+            id="chooseAvatarButton"
+            type="button"
+          >
+            更换头像
+          </button>
+
+          <div class="avatar-tip">
+            支持 JPG、PNG、WebP，自动裁剪为正方形
+          </div>
+        </div>
+
+        <input
+          id="avatarFile"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+        >
+      </div>
+
+      <div class="form-item">
+        <label class="form-label" for="nameInput">
+          姓名
+        </label>
+
+        <input
+          class="form-control"
+          id="nameInput"
+          type="text"
+          maxlength="20"
+          placeholder="请输入姓名"
+        >
+      </div>
+
+      <div class="form-item">
+        <label class="form-label" for="collegeInput">
+          学院
+        </label>
+
+        <input
+          class="form-control"
+          id="collegeInput"
+          type="text"
+          maxlength="30"
+          placeholder="请输入学院"
+        >
+      </div>
+
+      <div class="form-item">
+        <label class="form-label" for="sexInput">
+          性别
+        </label>
+
+        <select
+          class="form-control"
+          id="sexInput"
+        >
+          <option value="男">男</option>
+          <option value="女">女</option>
+        </select>
+      </div>
+
+      <div class="form-item">
+        <label class="form-label" for="identityInput">
+          身份
+        </label>
+
+        <input
+          class="form-control"
+          id="identityInput"
+          type="text"
+          maxlength="10"
+          placeholder="例如：学生"
+        >
+      </div>
+
+      <div class="editor-actions">
+        <button
+          class="editor-button editor-cancel"
+          id="editorCancel"
+          type="button"
+        >
+          取消
+        </button>
+
+        <button
+          class="editor-button editor-save"
+          id="editorSave"
+          type="button"
+        >
+          保存
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PROFILE_STORAGE_KEY =
+      "cppu_home_student_profile_v4";
+
+    const EDIT_PASSWORD = "787903";
+
+    const DEFAULT_PROFILE = {
+      name: "梁思源",
+      college: "研究生院",
+      sex: "男",
+      identity: "学生",
+      avatar: "./avatar.jpg"
+    };
+
+    let editorUnlocked = false;
+    let unlockTapTimes = [];
+    let currentAvatar = DEFAULT_PROFILE.avatar;
+
+    const unlockZone =
+      document.getElementById("unlockZone");
+
+    const schoolLogo =
+      document.getElementById("schoolLogo");
+
+    const logoFallback =
+      document.getElementById("logoFallback");
+
+    const studentCard =
+      document.getElementById("studentCard");
+
+    const studentName =
+      document.getElementById("studentName");
+
+    const studentCollege =
+      document.getElementById("studentCollege");
+
+    const sexSymbol =
+      document.getElementById("sexSymbol");
+
+    const sexText =
+      document.getElementById("sexText");
+
+    const identityText =
+      document.getElementById("identityText");
+
+    const studentAvatar =
+      document.getElementById("studentAvatar");
+
+    const passwordMask =
+      document.getElementById("passwordMask");
+
+    const passwordInput =
+      document.getElementById("passwordInput");
+
+    const passwordError =
+      document.getElementById("passwordError");
+
+    const passwordCancel =
+      document.getElementById("passwordCancel");
+
+    const passwordConfirm =
+      document.getElementById("passwordConfirm");
+
+    const editorMask =
+      document.getElementById("editorMask");
+
+    const avatarPreview =
+      document.getElementById("avatarPreview");
+
+    const avatarFile =
+      document.getElementById("avatarFile");
+
+    const chooseAvatarButton =
+      document.getElementById("chooseAvatarButton");
+
+    const nameInput =
+      document.getElementById("nameInput");
+
+    const collegeInput =
+      document.getElementById("collegeInput");
+
+    const sexInput =
+      document.getElementById("sexInput");
+
+    const identityInput =
+      document.getElementById("identityInput");
+
+    const editorCancel =
+      document.getElementById("editorCancel");
+
+    const editorSave =
+      document.getElementById("editorSave");
+
+    /*
+      Logo加载失败时显示备用文字。
+    */
+    schoolLogo.addEventListener(
+      "error",
+      function () {
+        schoolLogo.style.display = "none";
+        logoFallback.style.display = "flex";
+      }
+    );
+
+    schoolLogo.addEventListener(
+      "load",
+      function () {
+        schoolLogo.style.display = "block";
+        logoFallback.style.display = "none";
+      }
+    );
+
+    /*
+      获取已经保存的学生信息。
+    */
+    function getSavedProfile() {
+      try {
+        const savedText =
+          localStorage.getItem(PROFILE_STORAGE_KEY);
+
+        if (!savedText) {
+          return { ...DEFAULT_PROFILE };
+        }
+
+        const savedProfile =
+          JSON.parse(savedText);
+
+        return {
+          ...DEFAULT_PROFILE,
+          ...savedProfile
+        };
+      } catch (error) {
+        return { ...DEFAULT_PROFILE };
+      }
+    }
+
+    /*
+      将学生信息渲染到蓝色学生卡。
+    */
+    function renderProfile() {
+      const profile = getSavedProfile();
+
+      studentName.textContent =
+        profile.name || DEFAULT_PROFILE.name;
+
+      studentCollege.textContent =
+        profile.college || DEFAULT_PROFILE.college;
+
+      sexText.textContent =
+        profile.sex === "女" ? "女" : "男";
+
+      sexSymbol.textContent =
+        profile.sex === "女" ? "♀" : "♂";
+
+      identityText.textContent =
+        profile.identity || DEFAULT_PROFILE.identity;
+
+      studentAvatar.src =
+        profile.avatar || DEFAULT_PROFILE.avatar;
+    }
+
+    /*
+      顶部 Logo 区域连续点击五次。
+      4秒内完成五次点击才会打开密码窗口。
+    */
+    function handleUnlockTap() {
+      const now = Date.now();
+
+      unlockTapTimes =
+        unlockTapTimes.filter(function (time) {
+          return now - time <= 4000;
+        });
+
+      unlockTapTimes.push(now);
+
+      if (unlockTapTimes.length >= 5) {
+        unlockTapTimes = [];
+        openPasswordDialog();
+      }
+    }
+
+    function openPasswordDialog() {
+      passwordInput.value = "";
+      passwordError.textContent = "";
+      passwordMask.classList.add("show");
+
+      setTimeout(function () {
+        passwordInput.focus();
+      }, 120);
+    }
+
+    function closePasswordDialog() {
+      passwordMask.classList.remove("show");
+      passwordInput.value = "";
+      passwordError.textContent = "";
+    }
+
+    /*
+      验证编辑密码。
+    */
+    function verifyPassword() {
+      if (passwordInput.value === EDIT_PASSWORD) {
+        editorUnlocked = true;
+        closePasswordDialog();
+        openEditor();
+        return;
+      }
+
+      passwordError.textContent =
+        "密码错误，请重新输入";
+
+      passwordInput.value = "";
+      passwordInput.focus();
+    }
+
+    /*
+      未解锁前点击学生卡不会弹出编辑窗口。
+    */
+    function handleStudentCardClick() {
+      if (!editorUnlocked) {
+        return;
+      }
+
+      openEditor();
+    }
+
+    function openEditor() {
+      if (!editorUnlocked) {
+        return;
+      }
+
+      const profile = getSavedProfile();
+
+      nameInput.value =
+        profile.name || DEFAULT_PROFILE.name;
+
+      collegeInput.value =
+        profile.college || DEFAULT_PROFILE.college;
+
+      sexInput.value =
+        profile.sex === "女" ? "女" : "男";
+
+      identityInput.value =
+        profile.identity || DEFAULT_PROFILE.identity;
+
+      currentAvatar =
+        profile.avatar || DEFAULT_PROFILE.avatar;
+
+      avatarPreview.src = currentAvatar;
+
+      editorMask.classList.add("show");
+    }
+
+    function closeEditor() {
+      editorMask.classList.remove("show");
+      avatarFile.value = "";
+    }
+
+    /*
+      保存姓名、学院、性别、身份和头像。
+    */
+    function saveEditor() {
+      const name =
+        nameInput.value.trim();
+
+      const college =
+        collegeInput.value.trim();
+
+      const sex =
+        sexInput.value;
+
+      const identity =
+        identityInput.value.trim();
+
+      if (!name) {
+        nameInput.focus();
+        return;
+      }
+
+      if (!college) {
+        collegeInput.focus();
+        return;
+      }
+
+      if (!identity) {
+        identityInput.focus();
+        return;
+      }
+
+      const profile = {
+        name,
+        college,
+        sex,
+        identity,
+        avatar: currentAvatar
+      };
+
+      try {
+        localStorage.setItem(
+          PROFILE_STORAGE_KEY,
+          JSON.stringify(profile)
+        );
+
+        renderProfile();
+        closeEditor();
+      } catch (error) {
+        /*
+          图片过大时不弹出额外提示。
+        */
+      }
+    }
+
+    /*
+      上传头像后裁剪成正方形并压缩。
+    */
+    function handleAvatarFile(event) {
+      const file =
+        event.target.files &&
+        event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        avatarFile.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function () {
+        const image = new Image();
+
+        image.onload = function () {
+          const canvas =
+            document.createElement("canvas");
+
+          const context =
+            canvas.getContext("2d");
+
+          const outputSize = 520;
+
+          canvas.width = outputSize;
+          canvas.height = outputSize;
+
+          const sourceSize =
+            Math.min(
+              image.naturalWidth,
+              image.naturalHeight
+            );
+
+          const sourceX =
+            (image.naturalWidth - sourceSize) / 2;
+
+          const sourceY =
+            (image.naturalHeight - sourceSize) / 2;
+
+          context.drawImage(
+            image,
+            sourceX,
+            sourceY,
+            sourceSize,
+            sourceSize,
+            0,
+            0,
+            outputSize,
+            outputSize
+          );
+
+          currentAvatar =
+            canvas.toDataURL(
+              "image/jpeg",
+              0.82
+            );
+
+          avatarPreview.src = currentAvatar;
+        };
+
+        image.src = reader.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    /*
+      图片加载失败时使用默认头像。
+    */
+    studentAvatar.addEventListener(
+      "error",
+      function () {
+        if (
+          studentAvatar.getAttribute("src") !==
+          DEFAULT_PROFILE.avatar
+        ) {
+          studentAvatar.src =
+            DEFAULT_PROFILE.avatar;
+        }
+      }
+    );
+
+    avatarPreview.addEventListener(
+      "error",
+      function () {
+        avatarPreview.src =
+          DEFAULT_PROFILE.avatar;
+      }
+    );
+
+    /*
+      绑定事件。
+    */
+    unlockZone.addEventListener(
+      "click",
+      handleUnlockTap
+    );
+
+    studentCard.addEventListener(
+      "click",
+      handleStudentCardClick
+    );
+
+    studentCard.addEventListener(
+      "keydown",
+      function (event) {
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+          event.preventDefault();
+          handleStudentCardClick();
+        }
+      }
+    );
+
+    passwordCancel.addEventListener(
+      "click",
+      closePasswordDialog
+    );
+
+    passwordConfirm.addEventListener(
+      "click",
+      verifyPassword
+    );
+
+    passwordInput.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key === "Enter") {
+          verifyPassword();
+        }
+      }
+    );
+
+    passwordInput.addEventListener(
+      "input",
+      function () {
+        passwordInput.value =
+          passwordInput.value.replace(/\D/g, "");
+
+        passwordError.textContent = "";
+      }
+    );
+
+    passwordMask.addEventListener(
+      "click",
+      function (event) {
+        if (event.target === passwordMask) {
+          closePasswordDialog();
+        }
+      }
+    );
+
+    chooseAvatarButton.addEventListener(
+      "click",
+      function () {
+        avatarFile.click();
+      }
+    );
+
+    avatarFile.addEventListener(
+      "change",
+      handleAvatarFile
+    );
+
+    editorCancel.addEventListener(
+      "click",
+      closeEditor
+    );
+
+    editorSave.addEventListener(
+      "click",
+      saveEditor
+    );
+
+    editorMask.addEventListener(
+      "click",
+      function (event) {
+        if (event.target === editorMask) {
+          closeEditor();
+        }
+      }
+    );
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (event.key !== "Escape") {
+          return;
+        }
+
+        if (editorMask.classList.contains("show")) {
+          closeEditor();
+          return;
+        }
+
+        if (passwordMask.classList.contains("show")) {
+          closePasswordDialog();
+        }
+      }
+    );
+
+    /*
+      页面初始化。
+    */
+    renderProfile();
+  </script>
+</body>
+</html>
